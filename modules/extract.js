@@ -2,7 +2,6 @@
  * @author AZOULAY Jordan <jazoulay@greenflex.com>
  * @description Compare translation local files with localise.biz translation files language by language
  */
-
 const request = require("request");
 const fs = require("fs");
 const config = require("./config");

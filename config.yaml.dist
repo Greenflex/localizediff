@@ -4,3 +4,4 @@ params:
   pathToTranslations:
   key:
   filter: reactjs
+  commandAfterSync:

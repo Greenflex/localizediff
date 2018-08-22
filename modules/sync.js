@@ -2,11 +2,11 @@
  * @author AZOULAY Jordan <jazoulay@greenflex.com>
  * @description Compare translation local files with localise.biz translation files language by language
  */
-
 const request = require("request");
 const fs = require("fs");
 const config = require("./config");
 const chalk = require("chalk");
+const cmd = require("node-cmd");
 
 module.exports = (function() {
   let options = null;
@@ -136,6 +136,17 @@ module.exports = (function() {
       console.log(`\tModifications : ${nbModifications}`);
       console.log(`\tNew translation keys : ${nbNewKey}`);
       console.log("\t----------------------");
+    }
+
+    if (nbModifications > 0 && options.commandAfterSync) {
+      cmd.get(options.commandAfterSync, (err, data, stderr) => {
+        if (err) {
+          console.log(chalk.red(`Command ${options.commandAfterSync} fail!`));
+          process.exit(0);
+        } else {
+          verbose ? console.log(data) : "";
+        }
+      });
     }
 
     return file;

@@ -79,6 +79,8 @@ module.exports = (function() {
     verbose
       ? console.log(chalk.italic("\tFilter: ") + chalk.bold(params.filter))
       : "";
+    /** @var options.commandAfterSync command to execute after sync if translation file changed */
+    options.commandAfterSync = params.commandAfterSync? params.commandAfterSync : null;
 
     verbose ? console.log("") : "";
     return options;
