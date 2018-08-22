@@ -1,0 +1,6 @@
+params:
+  localisebiz: https://localise.biz/api
+  languages: ["en", "fr"]
+  pathToTranslations: /home/jazoulay/Public/MoveGreen/front/src/translations
+  key: ZNbg7tVWeCGo0zgWTyzO6XVS_UsUsai9y
+  filter: reactjs
