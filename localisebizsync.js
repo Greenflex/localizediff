@@ -5,6 +5,7 @@
 
 let program = require("commander");
 let syncProgram = require("./modules/sync");
+let extractProgram = require("./modules/extract");
 
 let version = "0.9.0-beta";
 let cmdValue = null;
@@ -12,6 +13,11 @@ let cmdValue = null;
 program
   .version(version)
   .option("-v, --verbose", "display verbose")
+  .option("-l, --language [language]", "language from extract")
+  .option(
+    "-d, --direction [direction]",
+    "use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )"
+  )
   .usage("[options] <cmd>")
   .arguments("<cmd>")
   .action(function(cmd, env) {
@@ -23,16 +29,29 @@ init();
 function init() {
   program.on("--help", function() {
     console.log("  Infos:");
-    console.log("\tWrite configuration in config.yaml file. Open README.md\n");
-    console.log("  Commandes:");
-    console.log("\tsync \tsynchronize translation with localise.biz  \n");
+    console.log("\tWrite configuration in config.yaml file. Open README.md");
+    console.log("\n  Commandes:");
+    console.log("\tsync \tsynchronize translation with localise.biz");
+    console.log("\textract extract key from language for others");
+    console.log("\n  Usages:");
+    console.log("\tlocalisebizsync.js sync");
+    console.log("\tlocalisebizsync.js -v -d up sync");
+    console.log("\tlocalisebizsync.js -l en extract");
+    console.log("\tlocalisebizsync.js -v -l fr extract");
   });
   program.parse(process.argv);
 
   switch (cmdValue) {
     case "sync":
       program.verbose ? console.log("\n") : "";
-      syncProgram.start(program.verbose);
+      syncProgram.start(
+        program.verbose,
+        program.direction ? program.direction : "down"
+      );
+      break;
+    case "extract":
+      program.verbose ? console.log("\n") : "";
+      extractProgram.start(program.verbose, program.language);
       break;
     default:
       program.verbose ? console.warn("WARN ::::: No command") : "";

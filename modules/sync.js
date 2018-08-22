@@ -11,12 +11,15 @@ const chalk = require("chalk");
 module.exports = (function() {
   let options = null;
   let verbose = false;
+  let direction = null;
 
-  function start(v) {
+  function start(v, d) {
     if (v) {
       verbose = true;
       config.setVerbose(true);
     }
+
+    direction = d;
 
     options = config.getConfig();
 
@@ -118,7 +121,7 @@ module.exports = (function() {
           ? console.log(chalk.dim(`\tNew translation key : '${key}'`))
           : "";
       } else {
-        file[key] = filePo[key];
+        file[key] = direction === "up" ? fileDev[key] : filePo[key];
         verbose
           ? console.log(
               chalk.dim(`\tKey '${key}' updated with value : '${filePo[key]}'`)
