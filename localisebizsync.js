@@ -1,3 +1,8 @@
+/**
+ * @author AZOULAY Jordan <jazoulay@greenflex.com>
+ * @description Program for sync local translation and localise.biz
+ */
+
 let program = require("commander");
 let syncProgram = require("./modules/sync");
 

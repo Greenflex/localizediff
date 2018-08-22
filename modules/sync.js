@@ -1,3 +1,8 @@
+/**
+ * @author AZOULAY Jordan <jazoulay@greenflex.com>
+ * @description Compare translation local files with localise.biz translation files language by language
+ */
+
 const request = require("request");
 const fs = require("fs");
 const config = require("./config");
@@ -31,6 +36,7 @@ module.exports = (function() {
       verbose ? console.log(chalk.italic(`\tLoad API file ${url}`)) : "";
 
       try {
+        /** @var fileDev local translation file  */
         const fileDev = JSON.parse(
           fs.readFileSync(`${options.pathToTranslations}${language}.json`)
         );
@@ -60,7 +66,7 @@ module.exports = (function() {
                 : "";
               process.exit(0);
             } else if (res.statusCode === 200) {
-              // you can use data here - already parsed as json
+              /** @var filePo translation file in localise.biz */
               const filePo = JSON.parse(JSON.stringify(data));
               const finalFile = sync(fileDev, filePo);
               try {
@@ -89,6 +95,12 @@ module.exports = (function() {
     }
   }
 
+  /**
+   *
+   * @param {*} fileDev
+   * @param {*} filePo
+   * @description Create new translation file with translation changed by product owner and add new key translation
+   */
   function sync(fileDev, filePo) {
     verbose ? console.log("") : "";
 
@@ -126,6 +138,12 @@ module.exports = (function() {
     return file;
   }
 
+  /**
+   *
+   * @param {*} finalFile
+   * @param {*} language
+   * @description Save local translation file
+   */
   function updateFileDev(finalFile, language) {
     fs.writeFile(
       `${options.pathToTranslations}${language}.json`,
@@ -151,6 +169,12 @@ module.exports = (function() {
     );
   }
 
+  /**
+   *
+   * @param {*} finalFile
+   * @param {*} language
+   * @description Update translation file to localise.biz
+   */
   function updateFilePo(finalFile, language) {
     const url = `${
       options.localisebiz
