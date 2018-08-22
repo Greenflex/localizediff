@@ -1,0 +1,6 @@
+params:
+  localisebiz: https://localise.biz/api
+  languages: ["en", "fr"]
+  pathToTranslations:
+  key:
+  filter: reactjs
