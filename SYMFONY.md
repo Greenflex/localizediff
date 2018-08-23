@@ -6,7 +6,7 @@
 
 **0. Preparation du projet coté localise.biz**
 
-[Voir la documentation sur LocaliseBizSync](./README.md#localise-biz)
+[Voir la documentation sur LocaliseBizSync](./README.md#localisebiz)
 
 **1. Installation du bundle de traduction Symfony**
 
