@@ -18,6 +18,15 @@ module.exports = (function() {
       config.setVerbose(true);
     }
 
+    if (languageFrom === undefined) {
+      verbose
+        ? console.error(
+            chalk.red("Use -l option for select language from extract")
+          )
+        : "";
+      process.exit(0);
+    }
+
     languageToExtract = languageFrom;
 
     options = config.getConfig();
@@ -34,11 +43,6 @@ module.exports = (function() {
       verbose
         ? console.log("Language " + chalk.underline.bold(language) + " :::::")
         : "";
-      const url = `${
-        options.localisebiz
-      }export/locale/${language}.json?filter=reactjs&format=script`;
-
-      verbose ? console.log(chalk.italic(`\tLoad API file ${url}`)) : "";
 
       let fileDev = null;
       let fileToExtract = null;
