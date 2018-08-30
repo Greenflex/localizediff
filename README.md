@@ -148,7 +148,7 @@ params:
 
 _Étape n°2 : Création d'un cron toutes les 15 minutes_
 
-`*/15 * * * * node /path/to/LocaliseBizSync/localisebizsync.js sync >/dev/null 2>&1`
+`*/30 * * * * node /path/to/LocaliseBizSync/localisebizsync.js sync >/dev/null 2>&1`
 
 **3. Mettre à jours localise.biz**
 
