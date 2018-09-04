@@ -106,7 +106,7 @@ https://github.com/php-http/HttplugBundle
 
 _Étape n°1 : Création d'un cron toutes les 15 minutes_
 
-`*/15 * * * * php /path/to/project/bin/console translation:sync app --env=prod`
+`*/30 * * * * php /path/to/project/bin/console translation:sync app --env=prod && /path/to/project/bin/console cache:warmup --env=prod --no-interaction`
 
 **2. Mettre à jours mon environement de développement**
 

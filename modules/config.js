@@ -13,7 +13,7 @@ module.exports = (function() {
    * @description open config.yaml file
    */
   function openFileConfig() {
-    return yaml.safeLoad(fs.readFileSync("./config.yaml", "utf8"));
+    return yaml.safeLoad(fs.readFileSync(__dirname + "/../config.yaml", "utf8"));
   }
 
   function setVerbose(v) {
