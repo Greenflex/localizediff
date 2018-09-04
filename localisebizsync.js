@@ -6,6 +6,7 @@
 let program = require("commander");
 let syncProgram = require("./modules/sync");
 let extractProgram = require("./modules/extract");
+let downloadProgram = require("./modules/download");
 
 let version = "0.9.0-beta";
 let cmdValue = null;
@@ -31,13 +32,17 @@ function init() {
     console.log("  Infos:");
     console.log("\tWrite configuration in config.yaml file. Open README.md");
     console.log("\n  Commandes:");
-    console.log("\tsync \tsynchronize translation with localise.biz");
-    console.log("\textract extract key from language for others");
+    console.log("\tsync \t synchronize translation with localise.biz");
+    console.log("\textract  extract key from language for others");
+    console.log(
+      "\tdownload downlaod translations file from localise.biz to local pathToTranslations"
+    );
     console.log("\n  Usages:");
-    console.log("\tlocalisebizsync.js sync");
-    console.log("\tlocalisebizsync.js -v -d up sync");
-    console.log("\tlocalisebizsync.js -l en extract");
-    console.log("\tlocalisebizsync.js -v -l fr extract");
+    console.log("\tnode localisebizsync.js sync");
+    console.log("\tnode localisebizsync.js -v -d up sync");
+    console.log("\tnode localisebizsync.js -l en extract");
+    console.log("\tnode localisebizsync.js -v -l fr extract");
+    console.log("\tnode localisebizsync.js -v download");
   });
   program.parse(process.argv);
 
@@ -52,6 +57,10 @@ function init() {
     case "extract":
       program.verbose ? console.log("\n") : "";
       extractProgram.start(program.verbose, program.language);
+      break;
+    case "download":
+      program.verbose ? console.log("\n") : "";
+      downloadProgram.start(program.verbose);
       break;
     default:
       program.verbose ? console.warn("WARN ::::: No command") : "";

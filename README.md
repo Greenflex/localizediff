@@ -43,14 +43,16 @@ $ node localisebizsync.js -h
 	Write configuration in config.yaml file. Open README.md
 
   Commandes:
-	sync 	synchronize translation with localise.biz
-	extract extract key from language for others
+	sync 	 synchronize translation with localise.biz
+	extract  extract key from language for others
+	download downlaod translations file from localise.biz to local pathToTranslations
 
   Usages:
-	localisebizsync.js sync
-	localisebizsync.js -v -d up sync
-	localisebizsync.js -l en extract
-	localisebizsync.js -v -l fr extract
+	node localisebizsync.js sync
+	node localisebizsync.js -v -d up sync
+	node localisebizsync.js -l en extract
+	node localisebizsync.js -v -l fr extract
+	node localisebizsync.js -v download
 ```
 
 ### Configuration
@@ -180,4 +182,28 @@ _Étape n°1 : Synchroniser les traductions de localise.biz vers mon locale_
 
 ```bash
 $ node localisebizsync.js -v sync
+```
+
+**5. Je ne veux pas que mes fichiers de traduction soient sur mon logiciel de gestion de versions Git**
+
+- _J'ai_
+
+  Mes traductions sont sur localise.biz et seulement sur localise.biz
+
+- _Je veux_
+
+  Je veux pouvoir coder avec mes fichiers de traduction en local dans un projet react
+
+_Étape n°1 : Ignorer les fichiers de traduction sur git_
+
+Editer le fichier _.gitignore_
+
+```
+/path/to/folder/translation
+```
+
+_Étape n°2 : Télécharger les traductions de localise.biz vers mon locale_
+
+```bash
+$ node localisebizsync.js -v download
 ```

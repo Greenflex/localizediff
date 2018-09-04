@@ -139,3 +139,27 @@ _Étape n°1 : Synchroniser les traductions du local vers localise.biz_
 ```bash
 $ php bin/console translation:sync app up
 ```
+
+**4. Je ne veux pas que mes fichiers de traduction soient sur mon logiciel de gestion de versions Git**
+
+- _J'ai_
+
+  Mes traductions sont sur localise.biz et seulement sur localise.biz
+
+- _Je veux_
+
+  Je veux pouvoir coder avec mes fichiers de traduction en local dans un projet react
+
+_Étape n°1 : Ignorer les fichiers de traduction sur git_
+
+Editer le fichier _.gitignore_
+
+```
+/path/to/folder/translation
+```
+
+_Étape n°2 : Télécharger les traductions de localise.biz vers mon locale_
+
+```bash
+$ php bin/console translation:download
+```
