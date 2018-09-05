@@ -58,7 +58,7 @@ translation_adapter_loco:
   projects:
     acme:
       api_key: "R6gNpRPZM_tzN4Kti2AR86AKow7J0DASf" # API key read/write
-      domains: ["messages"]
+      domains: ["messages", "messages"]
 ```
 
 > `domains` correspond aux domaines de traduction par exemple pour les formulaire avec le fichier forms.yaml le domaine sera forms donc `domains: ["messages", "forms"]` qui prendront comme forme sur localise.biz de tag
