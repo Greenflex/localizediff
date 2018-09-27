@@ -138,6 +138,7 @@ module.exports = (function () {
                 verbose
                         ? console.log(chalk.dim(`\tNew translation key : '${key}'`))
                         : "";
+                 nbModifications++;
             }
         }
         if (verbose) {
