@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * @author AZOULAY Jordan <jazoulay@greenflex.com>
  * @description Program for sync local translation and localise.biz
