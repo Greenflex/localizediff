@@ -15,7 +15,7 @@ let cmdValue = null;
 program
         .version(version)
         .option("-v, --verbose", "display verbose")
-        .option("-l, --language [language]", "language from extract")
+        .option("-f, --from [language]", "language from extract")
         .option(
                 "-d, --direction [direction]",
                 "use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )"
@@ -39,11 +39,11 @@ function init() {
                 "\tdownload downlaod translations file from localise.biz to local pathToTranslations"
                 );
         console.log("\n  Usages:");
-        console.log("\tnode localisebizsync.js sync");
-        console.log("\tnode localisebizsync.js -v -d up sync");
-        console.log("\tnode localisebizsync.js -l en extract");
-        console.log("\tnode localisebizsync.js -v -l fr extract");
-        console.log("\tnode localisebizsync.js -v download");
+        console.log("\tlocalizediff sync");
+        console.log("\tlocalizediff -v -d up sync");
+        console.log("\tlocalizediff -f en extract");
+        console.log("\tlocalizediff -v -f fr extract");
+        console.log("\tlocalizediff -v download");
     });
     program.parse(process.argv);
 
@@ -57,7 +57,7 @@ function init() {
             break;
         case "extract":
             program.verbose ? console.log("\n") : "";
-            extractProgram.start(program.verbose, program.language);
+            extractProgram.start(program.verbose, program.from);
             break;
         case "download":
             program.verbose ? console.log("\n") : "";

@@ -21,7 +21,7 @@ module.exports = (function () {
         if (languageFrom === undefined) {
             verbose
                     ? console.error(
-                            chalk.red("Use -l option for select language from extract")
+                            chalk.red("Use -f option for select language from extract")
                             )
                     : "";
             process.exit(0);

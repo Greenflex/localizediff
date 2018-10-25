@@ -2,32 +2,24 @@
 
 _LocaliseBizSync est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_
 
-> [Comment traduire sur Symfony](./SYMFONY.md)
-
 ## Pré-requis
 
 _NodeJs sur le serveur en version minimum 8_
 
 ## Installation
 
-- Npm
 
 ```bash
-npm install
+npm -g install localizediff
 ```
 
-- Yarn
-
-```bash
-yarn install
-```
 
 ## Logiciel
 
 > Utiliser l'option `-v` afin d'afficher un maximum d'informations
 
 ```bash
-$ node localisebizsync.js -h
+$ localizediff -h
 
   Usage: localisebizsync [options] <cmd>
 
@@ -35,12 +27,12 @@ $ node localisebizsync.js -h
 
     -V, --version                output the version number
     -v, --verbose                display verbose
-    -l, --language [language]    language from extract
+    -f, --from [language]        language from extract
     -d, --direction [direction]  use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )
     -h, --help                   output usage information
 
   Infos:
-	Write configuration in config.yaml file. Open README.md
+	Write configuration in localize.yaml file. Open README.md
 
   Commandes:
 	sync 	 synchronize translation with localise.biz
@@ -48,16 +40,16 @@ $ node localisebizsync.js -h
 	download downlaod translations file from localise.biz to local pathToTranslations
 
   Usages:
-	node localisebizsync.js sync
-	node localisebizsync.js -v -d up sync
-	node localisebizsync.js -l en extract
-	node localisebizsync.js -v -l fr extract
-	node localisebizsync.js -v download
+	localizediff sync
+	localizediff -v -d up sync
+	localizediff -l en extract
+	localizediff -v -f fr extract
+	localizediff -v download
 ```
 
 ### Configuration
 
-_La configuration du fichier se fait via un fichier nommé `config.yaml` (voir le fichier config.yaml.dist)_
+_La configuration du fichier se fait via un fichier nommé `localize.yaml` (voir le fichier localize.yaml.dist) à la racine du projet_
 
 ```yaml
 params:
@@ -65,7 +57,7 @@ params:
   languages: ["en", "fr"] # language do you want translate
   pathToTranslations: # path to local folder with all translation files (fr.json, en.json, es.json, ...)
   key: # key read and write localise.biz api
-  filter: reactjs # tag for separate symfony files translation and reactjs files translation
+  filter: reactjs # tag 
   commandAfterSync: # command execute if files changed after synchronization (ex : "make --directory=/home/my-project yarn-install")
 ```
 
@@ -101,27 +93,27 @@ params:
 
 _Étape n°1 : Mon fichier de configuration_
 
-config.yaml
+localize.yaml
 
 ```yaml
 params:
   localisebiz: https://localise.biz/api
   languages: ["fr", "en"]
   pathToTranslations: /path/to/translations
-  key: pn1pnDoAsRgY99sRkQ7NxukHSXCbXIzGw
+  key: pn1sRbXIzpnDokQ7NxukHSXCAsRgY99Gw
   filter: reactjs
 ```
 
 _Étape n°2 : Extraction du fichier de traduction français pour la traduction anglaise_
 
 ```bash
-$ node localisebizsync.js -v -l fr extract
+$ localizediff -v -l fr extract
 ```
 
 _Étape n°3: Synchroniser les traductions du projet en local vers localise.biz_
 
 ```bash
-$ node localisebizsync.js -v -d up sync
+$ localizediff -v -d up sync
 ```
 
 **2. Le projet est sur un serveur recette, ux ou prod**
@@ -136,21 +128,21 @@ $ node localisebizsync.js -v -d up sync
 
 _Étape n°1 : Mon fichier de configuration_
 
-config.yaml
+localize.yaml
 
 ```yaml
 params:
   localisebiz: https://localise.biz/api
   languages: ["fr", "en"]
   pathToTranslations: /path/to/translations
-  key: pn1pnDoAsRgY99sRkQ7NxukHSXCbXIzGw
+  key: pn1sRbXIzpnDokQ7NxukHSXCAsRgY99Gw
   filter: reactjs
-  commandAfterSync: "make --directory=/path/to/Makefile assets" # make assets execute `yarn build`
+  commandAfterSync: "make --directory=/path/to/Makefile yarn-build" # example make execute `yarn build`
 ```
 
-_Étape n°2 : Création d'un cron toutes les 15 minutes_
+_Étape n°2 : Création d'un cron toutes les 30 minutes_
 
-`*/30 * * * * node /path/to/LocaliseBizSync/localisebizsync.js sync >/dev/null 2>&1`
+`*/30 * * * * node /path/to/LocaliseBizSync/localizediff sync >/dev/null 2>&1`
 
 **3. Mettre à jours localise.biz**
 
@@ -165,7 +157,7 @@ _Étape n°2 : Création d'un cron toutes les 15 minutes_
 _Étape n°1 : Synchroniser les traductions du local vers localise.biz_
 
 ```bash
-$ node localisebizsync.js -v -d up sync
+$ localizediff -v -d up sync
 ```
 
 **4. Mettre à jours mon environement de développement**
@@ -181,7 +173,7 @@ $ node localisebizsync.js -v -d up sync
 _Étape n°1 : Synchroniser les traductions de localise.biz vers mon locale_
 
 ```bash
-$ node localisebizsync.js -v sync
+$ localizediff -v sync
 ```
 
 **5. Je ne veux pas que mes fichiers de traduction soient sur mon logiciel de gestion de versions Git**
@@ -205,5 +197,5 @@ Editer le fichier _.gitignore_
 _Étape n°2 : Télécharger les traductions de localise.biz vers mon locale_
 
 ```bash
-$ node localisebizsync.js -v download
+$ localizediff -v download
 ```

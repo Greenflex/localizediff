@@ -15,6 +15,10 @@ module.exports = (function () {
     function openFileConfig() {
         return yaml.safeLoad(fs.readFileSync(`${process.cwd()}/localize.yaml`, "utf8"));
     }
+    
+    function setVerbose(v) {
+        verbose = v;
+    }
 
     function setVerbose(v) {
         verbose = v;
@@ -28,7 +32,7 @@ module.exports = (function () {
         try {
             params = openFileConfig().params;
         } catch (e) {
-            console.error(chalk.red(`Config file ( ${process.cwd()}/localize.yamllocalize.yaml ) not found`));
+            console.error(chalk.red(`Config file ( ${process.cwd()}/localize.yaml ) not found`));
             process.exit(0);
         }
 
