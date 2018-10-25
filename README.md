@@ -2,7 +2,7 @@
 
 _LocaliseBizSync est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_
 
-youtube:
+Démo youtube:
 
 [![Démo](https://img.youtube.com/vi/howNUTq09Oo/0.jpg)](https://www.youtube.com/watch?v=howNUTq09Oo)
 
@@ -75,14 +75,14 @@ params:
 
 > Choisir les extensions de langue plutot que les pays par exemple pour l'anglais choisir `en`
 
-![img1](./documentation/images/img1.png)
-![img2](./documentation/images/img2.png)
+Aller sur le projet https://localise.biz/ et dans l'onglet "Manage" cliquer sur le "+" à coté de la langue principal . Faire une 
+recherche avec le mot clé "en" et sélectionner [EN] English
 
 2. Générer une clé API read/write
 
-![img3](./documentation/images/img3.png)
-![img4](./documentation/images/img4.png)
-
+Aller sur le projet https://localise.biz/ et dans le menu de droite cliquer sur la clé à molette et cliquer sur "API Keys" .
+En suite générer une key API dite "read and write".
+ 
 # Cas utilisations
 
 **1. Initialiser un projet**

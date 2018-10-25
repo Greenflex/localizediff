@@ -9,7 +9,7 @@ let syncProgram = require("./modules/sync");
 let extractProgram = require("./modules/extract");
 let downloadProgram = require("./modules/download");
 
-let version = "0.9.0-beta";
+let version = "1.0.7-stable";
 let cmdValue = null;
 
 program
