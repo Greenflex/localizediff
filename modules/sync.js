@@ -131,14 +131,14 @@ module.exports = (function () {
             }
         }
         // check if new key in filePo ( localise.biz )
-        for(let key in filePo){
+        for (let key in filePo) {
             if (fileDev[key] === undefined) {
                 file[key] = filePo[key];
                 nbNewKey++;
                 verbose
                         ? console.log(chalk.dim(`\tNew translation key : '${key}'`))
                         : "";
-                 nbModifications++;
+                nbModifications++;
             }
         }
         if (verbose) {
