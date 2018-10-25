@@ -2,6 +2,10 @@
 
 _LocaliseBizSync est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_
 
+youtube:
+
+[![Démo](https://img.youtube.com/vi/howNUTq09Oo/0.jpg)](https://www.youtube.com/watch?v=howNUTq09Oo)
+
 ## Pré-requis
 
 _NodeJs sur le serveur en version minimum 8_
