@@ -12,7 +12,10 @@ function extractMessages(pattern /* : string */) /* : string */ {
   const messages = contents
     .map(content =>
       babel.transform(content, {
-        presets: [require.resolve("babel-preset-react-app")],
+        presets: [
+          require.resolve("babel-preset-react-app"),
+          require.resolve("babel-preset-stage-1")
+        ],
         plugins: [require.resolve("babel-plugin-react-intl")],
         babelrc: false
       })

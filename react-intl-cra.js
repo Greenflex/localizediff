@@ -10,8 +10,8 @@ const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
 const chalk = require("chalk");
-const pkg = require("../package.json");
-const extract = require("/modules/react-extract-local");
+const pkg = require("./package.json");
+const extract = require("./modules/react-extract-local");
 
 // CLI Arguments
 const {

@@ -67,6 +67,7 @@ module.exports = (function() {
             }
           },
           (err, res, data) => {
+            console.log("even before");
             if (err) {
               verbose
                 ? console.error(chalk.red(`Http Error :::: ${err} `))
@@ -77,7 +78,9 @@ module.exports = (function() {
               const filePo = JSON.parse(JSON.stringify(data));
 
               // format to simple key: value
+              console.log("yo too");
               if (reactIntl) {
+                console.log("yo first");
                 fileDev = fileDev.map(message => ({
                   [message.id]: message.defaultMessage
                 }));
@@ -127,6 +130,7 @@ module.exports = (function() {
    * @description Create new translation file with translation changed by product owner and add new key translation
    */
   function sync(fileDev, filePo) {
+    console.log("yo");
     verbose ? console.log("") : "";
 
     let file = {};
