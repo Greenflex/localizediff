@@ -1,18 +1,19 @@
 {
   "dependencies": {
-    "chalk": "^2.4.1",
-    "commander": "^2.17.1",
-    "js-yaml": "^3.12.0",
-    "node-cmd": "^3.0.0",
-    "npm": "^6.4.1",
-    "request": "^2.88.0",
     "babel-core": "^6.26.0",
     "babel-plugin-react-intl": "^2.4.0",
     "babel-preset-react-app": "^3.1.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "chalk": "^2.4.1",
+    "commander": "^2.17.1",
     "glob": "^7.1.2",
+    "js-yaml": "^3.12.0",
+    "node-cmd": "^3.0.0",
+    "npm": "^6.4.1",
     "ramda": "^0.25.0",
-    "yargs": "^11.0.0",
-    "babel-preset-stage-1": "^6.24.1"
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "yargs": "^11.0.0"
   },
   "name": "localizediff",
   "description": "_LocaliseBizSync est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_",

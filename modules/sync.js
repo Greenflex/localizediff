@@ -12,17 +12,14 @@ module.exports = (function() {
   let options = null;
   let verbose = false;
   let direction = null;
-  let reactIntl = false;
 
-  function start(v, d, r) {
+  function start(v, d) {
     if (v) {
       verbose = true;
       config.setVerbose(true);
     }
 
     direction = d;
-
-    reactIntl = r;
 
     options = config.getConfig();
 
@@ -43,9 +40,8 @@ module.exports = (function() {
 
       try {
         /** @var fileDev local translation file  */
-        const urlToTransFile = reactIntl ? "messages.json" : `${language}.json`;
-        let fileDev = JSON.parse(
-          fs.readFileSync(`${options.pathToTranslations}${urlToTransFile}`)
+        const fileDev = JSON.parse(
+          fs.readFileSync(`${options.pathToTranslations}${language}.json`)
         );
 
         verbose
@@ -67,7 +63,6 @@ module.exports = (function() {
             }
           },
           (err, res, data) => {
-            console.log("even before");
             if (err) {
               verbose
                 ? console.error(chalk.red(`Http Error :::: ${err} `))
@@ -76,25 +71,6 @@ module.exports = (function() {
             } else if (res.statusCode === 200) {
               /** @var filePo translation file in localise.biz */
               const filePo = JSON.parse(JSON.stringify(data));
-
-              // format to simple key: value
-              console.log("yo too");
-              if (reactIntl) {
-                console.log("yo first");
-                fileDev = fileDev.map(message => ({
-                  [message.id]: message.defaultMessage
-                }));
-                // only update french trans
-                const finalFile = sync(fileDev, filePo);
-                try {
-                  updateFilePo(finalFile, "fr");
-                } catch (err) {
-                  console.error(chalk.red(e));
-                  process.exit(0);
-                }
-                process.exit(0);
-              }
-
               const finalFile = sync(fileDev, filePo);
               try {
                 updateFileDev(finalFile, language);
@@ -114,7 +90,6 @@ module.exports = (function() {
       } catch (e) {
         console.error(
           chalk.red(
-            e,
             `File ${options.pathToTranslations}${language}.json not found`
           )
         );
@@ -130,7 +105,6 @@ module.exports = (function() {
    * @description Create new translation file with translation changed by product owner and add new key translation
    */
   function sync(fileDev, filePo) {
-    console.log("yo");
     verbose ? console.log("") : "";
 
     let file = {};

@@ -8,6 +8,7 @@ let program = require("commander");
 let syncProgram = require("./modules/sync");
 let extractProgram = require("./modules/extract");
 let downloadProgram = require("./modules/download");
+let importProgram = require("./modules/import");
 
 let version = "1.0.7-stable";
 let cmdValue = null;
@@ -57,6 +58,10 @@ function init() {
         program.direction ? program.direction : "down",
         program.reactIntl
       );
+      break;
+    case "import":
+      program.verbose ? console.log("import react-intl messages") : "";
+      importProgram.start(program.verbose);
       break;
     case "extract":
       program.verbose ? console.log("\n") : "";
