@@ -17,7 +17,6 @@ program
   .version(version)
   .option("-v, --verbose", "display verbose")
   .option("-f, --from [language]", "language from extract")
-  .option("-ri, --react-intl", "use file from babel-plugin-react-intl extract")
   .option(
     "-d, --direction [direction]",
     "use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )"
@@ -42,7 +41,7 @@ function init() {
     );
     console.log("\n  Usages:");
     console.log("\tlocalizediff sync");
-    console.log("\tlocalizediff sync -ri");
+    console.log("\tlocalizediff import");
     console.log("\tlocalizediff -v -d up sync");
     console.log("\tlocalizediff -f en extract");
     console.log("\tlocalizediff -v -f fr extract");

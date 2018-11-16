@@ -12,11 +12,9 @@ _NodeJs sur le serveur en version minimum 8_
 
 ## Installation
 
-
 ```bash
 npm -g install localizediff
 ```
-
 
 ## Logiciel
 
@@ -61,7 +59,7 @@ params:
   languages: ["en", "fr"] # language do you want translate
   pathToTranslations: # path to local folder with all translation files (fr.json, en.json, es.json, ...)
   key: # key read and write localise.biz api
-  filter: reactjs # tag 
+  filter: reactjs # tag
   commandAfterSync: # command execute if files changed after synchronization (ex : "make --directory=/home/my-project yarn-install")
 ```
 
@@ -71,18 +69,18 @@ params:
 
 ## Initialiser mon projet
 
-1. Il faut choisir les langues dont le projet sera traduit.
+1.  Il faut choisir les langues dont le projet sera traduit.
 
 > Choisir les extensions de langue plutot que les pays par exemple pour l'anglais choisir `en`
 
-Aller sur le projet https://localise.biz/ et dans l'onglet "Manage" cliquer sur le "+" à coté de la langue principal . Faire une 
+Aller sur le projet https://localise.biz/ et dans l'onglet "Manage" cliquer sur le "+" à coté de la langue principal . Faire une
 recherche avec le mot clé "en" et sélectionner [EN] English
 
-2. Générer une clé API read/write
+2.  Générer une clé API read/write
 
 Aller sur le projet https://localise.biz/ et dans le menu de droite cliquer sur la clé à molette et cliquer sur "API Keys" .
 En suite générer une key API dite "read and write".
- 
+
 # Cas utilisations
 
 **1. Initialiser un projet**
@@ -202,4 +200,63 @@ _Étape n°2 : Télécharger les traductions de localise.biz vers mon locale_
 
 ```bash
 $ localizediff -v download
+```
+
+**6. React-intl**
+
+- _J'ai_
+
+  un projet qui utilise [react-intl](https://github.com/yahoo/react-intl)
+
+- _Je veux_
+
+  Extraire les clefs qui sont defini dans mon code par [defineMessages](https://github.com/yahoo/react-intl/wiki/API#definemessages) ou le composant [FormattedMessage](https://github.com/yahoo/react-intl/wiki/Components#formattedmessage) et uploader sur localise et les charger sur localise.biz
+
+_Étape n°1:_
+
+Edit le fichier yaml pour renseigner messagesFileName (par default: _messages_), pathToReactMessages:
+
+```yaml
+params:
+  localisebiz: https://localise.biz/api
+  languages:
+  pathToTranslations: /path/to/translations
+  pathToReactMessages: path/to/extracted/messages
+  messagesFileName: messages
+  key:
+  filter:
+  commandAfterSync:
+```
+
+_Étape n°2:_
+
+```bash
+$ extractmessages --help
+
+Usage: react-intl-cra <pattern> [options]
+
+<pattern> Glob pattern to specify files.
+          Needs to be surrounded with quotes to prevent shell globbing.
+          Guide to globs: https://github.com/isaacs/node-glob
+
+Options:
+  -o, --out-file  Output into a single file                             [string]
+  -h, --help      Show help                                            [boolean]
+  -v, --version   Show version number                                  [boolean]
+
+Examples:
+  react-intl-cra 'src/App.js'                   One file.
+  react-intl-cra 'src/**/*.js'                  Pattern to specify files
+  react-intl-cra 'src/**/*.js' -o message.json  Output into a single file.
+
+
+For more information go to https://github.com/evenchange4/react-intl-cra
+```
+
+_Étape n°3:_
+
+Syncro avec localise.biz (mets a jour seulement le francais):
+
+```bash
+  $ localizediff import
 ```
