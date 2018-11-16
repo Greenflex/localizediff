@@ -6,92 +6,115 @@ const yaml = require("js-yaml");
 const fs = require("fs");
 const chalk = require("chalk");
 
-module.exports = (function () {
-    let verbose = false;
+module.exports = (function() {
+  let verbose = false;
 
-    /**
-     * @description open config.yaml file
-     */
-    function openFileConfig() {
-        return yaml.safeLoad(fs.readFileSync(`${process.cwd()}/localize.yaml`, "utf8"));
-    }
-    
-    function setVerbose(v) {
-        verbose = v;
-    }
+  /**
+   * @description open config.yaml file
+   */
+  function openFileConfig() {
+    return yaml.safeLoad(
+      fs.readFileSync(`${process.cwd()}/localize.yaml`, "utf8")
+    );
+  }
 
-    function setVerbose(v) {
-        verbose = v;
-    }
+  function setVerbose(v) {
+    verbose = v;
+  }
 
-    /**
-     * @description create options variable with all parameters
-     */
-    function getConfig() {
-        let params = null;
-        try {
-            params = openFileConfig().params;
-        } catch (e) {
-            console.error(chalk.red(`Config file ( ${process.cwd()}/localize.yaml ) not found`));
-            process.exit(0);
-        }
+  function setVerbose(v) {
+    verbose = v;
+  }
 
-        verbose
-                ? console.log(chalk.bold("Config file ./localize.yaml loaded :"))
-                : "";
-        let options = {};
-        /** @var options.localisebiz path api localise.biz */
-        options.localisebiz =
-                params.localisebiz &&
-                params.localisebiz[params.localisebiz.length - 1] === "/"
-                ? params.localisebiz
-                : `${params.localisebiz}/`;
-        verbose
-                ? console.log(
-                        chalk.italic("\tLink to API localise.biz: ") +
-                        chalk.bold(options.localisebiz)
-                        )
-                : "";
-        /** @var options.key key public of localise.biz ( need read and write )  */
-        options.key = params.key;
-        verbose
-                ? console.log(
-                        chalk.italic("\tLocalize.biz key: ") + chalk.bold(options.key)
-                        )
-                : "";
-        /** @var options.pathToTranslations path to local translation folder  */
-        options.pathToTranslations =
-                params.pathToTranslations &&
-                params.pathToTranslations[params.pathToTranslations.length] === "/"
-                ? params.pathToTranslations
-                : `${params.pathToTranslations}/`;
-        verbose
-                ? console.log(
-                        chalk.italic("\tPath to local translation folder: ") +
-                        chalk.bold(options.pathToTranslations)
-                        )
-                : "";
-        /** @var options.languages languages (default : ["en", "fr"]) */
-        options.languages = params.languages ? params.languages : ["en", "fr"];
-        verbose
-                ? console.log(
-                        chalk.italic("\tLanguages: ") + chalk.bold(options.languages)
-                        )
-                : "";
-        /** @var options.filter tag to localise.biz use for differentiate with symfony files */
-        options.filter = params.filter ? params.filter : "reactjs";
-        verbose
-                ? console.log(chalk.italic("\tFilter: ") + chalk.bold(params.filter))
-                : "";
-        /** @var options.commandAfterSync command to execute after sync if translation file changed */
-        options.commandAfterSync = params.commandAfterSync ? params.commandAfterSync : null;
-
-        verbose ? console.log("") : "";
-        return options;
+  /**
+   * @description create options variable with all parameters
+   */
+  function getConfig() {
+    let params = null;
+    try {
+      params = openFileConfig().params;
+    } catch (e) {
+      console.error(
+        chalk.red(`Config file ( ${process.cwd()}/localize.yaml ) not found`)
+      );
+      process.exit(0);
     }
 
-    return {
-        setVerbose: setVerbose,
-        getConfig: getConfig
-    };
+    verbose
+      ? console.log(chalk.bold("Config file ./localize.yaml loaded :"))
+      : "";
+    let options = {};
+    /** @var options.localisebiz path api localise.biz */
+    options.localisebiz =
+      params.localisebiz &&
+      params.localisebiz[params.localisebiz.length - 1] === "/"
+        ? params.localisebiz
+        : `${params.localisebiz}/`;
+    verbose
+      ? console.log(
+          chalk.italic("\tLink to API localise.biz: ") +
+            chalk.bold(options.localisebiz)
+        )
+      : "";
+    /** @var options.key key public of localise.biz ( need read and write )  */
+    options.key = params.key;
+    verbose
+      ? console.log(
+          chalk.italic("\tLocalize.biz key: ") + chalk.bold(options.key)
+        )
+      : "";
+    /** @var options.pathToReactMessages path to messages extracted in react projects  */
+    options.pathToReactMessages =
+      params.pathToReactMessages &&
+      params.pathToReactMessages[params.pathToReactMessages.length] === "/"
+        ? params.pathToReactMessages
+        : `${params.pathToReactMessages}/`;
+    verbose
+      ? console.log(
+          chalk.italic("\tPath to local translation messages folder: ") +
+            chalk.bold(options.pathToReactMessages)
+        )
+      : "";
+    /** @var options.messagesFileName name of file to extract messages  */
+    options.messagesFileName = params.messagesFileName
+      ? params.messagesFileName
+      : "messages";
+
+    /** @var options.pathToTranslations path to local translation folder  */
+    options.pathToTranslations =
+      params.pathToTranslations &&
+      params.pathToTranslations[params.pathToTranslations.length] === "/"
+        ? params.pathToTranslations
+        : `${params.pathToTranslations}/`;
+    verbose
+      ? console.log(
+          chalk.italic("\tPath to local translation folder: ") +
+            chalk.bold(options.pathToTranslations)
+        )
+      : "";
+    /** @var options.languages languages (default : ["en", "fr"]) */
+    options.languages = params.languages ? params.languages : ["en", "fr"];
+    verbose
+      ? console.log(
+          chalk.italic("\tLanguages: ") + chalk.bold(options.languages)
+        )
+      : "";
+    /** @var options.filter tag to localise.biz use for differentiate with symfony files */
+    options.filter = params.filter ? params.filter : "reactjs";
+    verbose
+      ? console.log(chalk.italic("\tFilter: ") + chalk.bold(params.filter))
+      : "";
+    /** @var options.commandAfterSync command to execute after sync if translation file changed */
+    options.commandAfterSync = params.commandAfterSync
+      ? params.commandAfterSync
+      : null;
+
+    verbose ? console.log("") : "";
+    return options;
+  }
+
+  return {
+    setVerbose: setVerbose,
+    getConfig: getConfig
+  };
 })();
