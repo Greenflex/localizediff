@@ -1,18 +1,8 @@
 {
   "env": {
     "es6": true,
-    "jest": true,
-    "browser": true
+    "node": true
   },
   "root": true,
-  "extends": ["airbnb", "prettier"],
-  "rules": {
-    "react/sort-comp": 0,
-    "react/jsx-filename-extension": [
-      "error",
-      {
-        "extensions": [".js"]
-      }
-    ]
-  }
+  "extends": ["airbnb", "prettier"]
 }
