@@ -1,6 +1,6 @@
-# LocaliseBizSync
+# localizediff
 
-_LocaliseBizSync est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_
+_localizediff est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_
 
 Démo youtube:
 
@@ -23,7 +23,7 @@ npm -g install localizediff
 ```bash
 $ localizediff -h
 
-  Usage: localisebizsync [options] <cmd>
+  Usage: localizediff [options] <cmd>
 
   Options:
 
@@ -144,7 +144,7 @@ params:
 
 _Étape n°2 : Création d'un cron toutes les 30 minutes_
 
-`*/30 * * * * node /path/to/LocaliseBizSync/localizediff sync >/dev/null 2>&1`
+`*/30 * * * * localizediff sync >/dev/null 2>&1`
 
 **3. Mettre à jours localise.biz**
 
