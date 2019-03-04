@@ -2,119 +2,122 @@
  * @author AZOULAY Jordan <jazoulay@greenflex.com>
  * @description Read configuration in ./config.yaml file
  */
-const yaml = require("js-yaml");
-const fs = require("fs");
-const chalk = require("chalk");
+const yaml = require('js-yaml');
+const fs = require('fs');
+const chalk = require('chalk');
 
 module.exports = (function() {
   let verbose = false;
 
+  function setVerbose(v) {
+    verbose = v;
+  }
+
   /**
-   * @description open config.yaml file
+   * @description open localize.yaml file
    */
   function openFileConfig() {
-    return yaml.safeLoad(
-      fs.readFileSync(`${process.cwd()}/localize.yaml`, "utf8")
-    );
-  }
+    let configTry;
+    try {
+      // copy dist to yml file using env var for api key
+      const data = fs.readFileSync(
+        `${process.cwd()}/localize.yml.dist`,
+        'utf8',
+      );
+      var localizeKey = process.env.LOCALISE_KEY;
+      var result = data.replace(/key:/g, `key: ${localizeKey}`);
 
-  function setVerbose(v) {
-    verbose = v;
-  }
-
-  function setVerbose(v) {
-    verbose = v;
+      fs.writeFileSync(`${process.cwd()}/localize.yml`, result, 'utf8');
+      configTry = yaml.safeLoad(
+        fs.readFileSync(`${process.cwd()}/localize.yml`, 'utf8'),
+      );
+    } catch (err) {
+      verbose ? console.error(chalk.red(`error with Upload :::: ${err} `)) : '';
+    }
+    return configTry;
   }
 
   /**
    * @description create options variable with all parameters
    */
   function getConfig() {
-    let params = null;
-    try {
-      params = openFileConfig().params;
-    } catch (e) {
-      console.error(
-        chalk.red(`Config file ( ${process.cwd()}/localize.yaml ) not found`)
-      );
-      process.exit(0);
-    }
+    const params = openFileConfig().params;
 
     verbose
-      ? console.log(chalk.bold("Config file ./localize.yaml loaded :"))
-      : "";
+      ? console.log(chalk.bold('Config file ./localize.yaml loaded :'))
+      : '';
     let options = {};
     /** @var options.localisebiz path api localise.biz */
     options.localisebiz =
       params.localisebiz &&
-      params.localisebiz[params.localisebiz.length - 1] === "/"
+      params.localisebiz[params.localisebiz.length - 1] === '/'
         ? params.localisebiz
         : `${params.localisebiz}/`;
     verbose
       ? console.log(
-          chalk.italic("\tLink to API localise.biz: ") +
-            chalk.bold(options.localisebiz)
+          chalk.italic('\tLink to API localise.biz: ') +
+            chalk.bold(options.localisebiz),
         )
-      : "";
+      : '';
     /** @var options.key key public of localise.biz ( need read and write )  */
     options.key = params.key;
     verbose
       ? console.log(
-          chalk.italic("\tLocalize.biz key: ") + chalk.bold(options.key)
+          chalk.italic('\tLocalize.biz key: ') + chalk.bold(options.key),
         )
-      : "";
+      : '';
     /** @var options.pathToReactMessages path to messages extracted in react projects  */
     options.pathToReactMessages =
       params.pathToReactMessages &&
-      params.pathToReactMessages[params.pathToReactMessages.length] === "/"
+      params.pathToReactMessages[params.pathToReactMessages.length] === '/'
         ? params.pathToReactMessages
         : `${params.pathToReactMessages}/`;
     verbose
       ? console.log(
-          chalk.italic("\tPath to local translation messages folder: ") +
-            chalk.bold(options.pathToReactMessages)
+          chalk.italic('\tPath to local translation messages folder: ') +
+            chalk.bold(options.pathToReactMessages),
         )
-      : "";
+      : '';
     /** @var options.messagesFileName name of file to extract messages  */
     options.messagesFileName = params.messagesFileName
       ? params.messagesFileName
-      : "messages";
+      : 'messages';
 
     /** @var options.pathToTranslations path to local translation folder  */
     options.pathToTranslations =
       params.pathToTranslations &&
-      params.pathToTranslations[params.pathToTranslations.length] === "/"
+      params.pathToTranslations[params.pathToTranslations.length] === '/'
         ? params.pathToTranslations
         : `${params.pathToTranslations}/`;
     verbose
       ? console.log(
-          chalk.italic("\tPath to local translation folder: ") +
-            chalk.bold(options.pathToTranslations)
+          chalk.italic('\tPath to local translation folder: ') +
+            chalk.bold(options.pathToTranslations),
         )
-      : "";
+      : '';
     /** @var options.languages languages (default : ["en", "fr"]) */
-    options.languages = params.languages ? params.languages : ["en", "fr"];
+    options.languages = params.languages ? params.languages : ['en', 'fr'];
     verbose
       ? console.log(
-          chalk.italic("\tLanguages: ") + chalk.bold(options.languages)
+          chalk.italic('\tLanguages: ') + chalk.bold(options.languages),
         )
-      : "";
+      : '';
     /** @var options.filter tag to localise.biz use for differentiate with symfony files */
-    options.filter = params.filter ? params.filter : "reactjs";
+    options.filter = params.filter ? params.filter : 'reactjs';
     verbose
-      ? console.log(chalk.italic("\tFilter: ") + chalk.bold(params.filter))
-      : "";
+      ? console.log(chalk.italic('\tFilter: ') + chalk.bold(params.filter))
+      : '';
     /** @var options.commandAfterSync command to execute after sync if translation file changed */
     options.commandAfterSync = params.commandAfterSync
       ? params.commandAfterSync
       : null;
 
-    verbose ? console.log("") : "";
+    verbose ? console.log('') : '';
     return options;
   }
 
   return {
     setVerbose: setVerbose,
-    getConfig: getConfig
+    getConfig: getConfig,
   };
 })();
