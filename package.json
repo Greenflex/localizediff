@@ -17,7 +17,7 @@
   },
   "name": "localizediff",
   "description": "_LocaliseBizSync est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "main": "localisebizsync.js",
   "devDependencies": {},
   "scripts": {
