@@ -9,6 +9,10 @@ const chalk = require('chalk');
 module.exports = (function() {
   let verbose = false;
 
+  function setVerbose(v) {
+    verbose = v;
+  }
+
   /**
    * @description open localize.yaml file
    */
@@ -27,14 +31,10 @@ module.exports = (function() {
       configTry = yaml.safeLoad(
         fs.readFileSync(`${process.cwd()}/localize.yml`, 'utf8'),
       );
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      verbose ? console.error(chalk.red(`error with Upload :::: ${err} `)) : '';
     }
     return configTry;
-  }
-
-  function setVerbose(v) {
-    verbose = v;
   }
 
   /**
