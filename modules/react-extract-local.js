@@ -7,7 +7,6 @@ const path = require("path");
 process.env.NODE_ENV = "production"; // For babel.transform
 
 function extractMessages(pattern /* : string */) /* : string */ {
-  console.log(pattern);
   const srcPaths = glob.sync(pattern, { absolute: true });
   const relativeSrcPaths = glob.sync(pattern);
   const contents = srcPaths
