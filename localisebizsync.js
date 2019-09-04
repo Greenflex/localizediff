@@ -10,7 +10,7 @@ let extractProgram = require("./modules/extract");
 let downloadProgram = require("./modules/download");
 let importProgram = require("./modules/import");
 
-let version = "1.0.7-stable";
+let version = "1.1.9-stable";
 let cmdValue = null;
 
 program
