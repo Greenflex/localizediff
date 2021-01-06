@@ -8,14 +8,15 @@ let program = require("commander");
 let syncProgram = require("./modules/sync");
 let extractProgram = require("./modules/extract");
 let downloadProgram = require("./modules/download");
+let importProgram = require("./modules/import");
 
-let version = "0.9.0-beta";
+let version = "1.1.9-stable";
 let cmdValue = null;
 
 program
   .version(version)
   .option("-v, --verbose", "display verbose")
-  .option("-l, --language [language]", "language from extract")
+  .option("-f, --from [language]", "language from extract")
   .option(
     "-d, --direction [direction]",
     "use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )"
@@ -31,7 +32,7 @@ init();
 function init() {
   program.on("--help", function() {
     console.log("  Infos:");
-    console.log("\tWrite configuration in config.yaml file. Open README.md");
+    console.log("\tWrite configuration in localize.yaml file. Open README.md");
     console.log("\n  Commandes:");
     console.log("\tsync \t synchronize translation with localise.biz");
     console.log("\textract  extract key from language for others");
@@ -39,11 +40,12 @@ function init() {
       "\tdownload downlaod translations file from localise.biz to local pathToTranslations"
     );
     console.log("\n  Usages:");
-    console.log("\tnode localisebizsync.js sync");
-    console.log("\tnode localisebizsync.js -v -d up sync");
-    console.log("\tnode localisebizsync.js -l en extract");
-    console.log("\tnode localisebizsync.js -v -l fr extract");
-    console.log("\tnode localisebizsync.js -v download");
+    console.log("\tlocalizediff sync");
+    console.log("\tlocalizediff import");
+    console.log("\tlocalizediff -v -d up sync");
+    console.log("\tlocalizediff -f en extract");
+    console.log("\tlocalizediff -v -f fr extract");
+    console.log("\tlocalizediff -v download");
   });
   program.parse(process.argv);
 
@@ -52,12 +54,17 @@ function init() {
       program.verbose ? console.log("\n") : "";
       syncProgram.start(
         program.verbose,
-        program.direction ? program.direction : "down"
+        program.direction ? program.direction : "down",
+        program.reactIntl
       );
+      break;
+    case "import":
+      program.verbose ? console.log("import react-intl messages") : "";
+      importProgram.start(program.verbose);
       break;
     case "extract":
       program.verbose ? console.log("\n") : "";
-      extractProgram.start(program.verbose, program.language);
+      extractProgram.start(program.verbose, program.from);
       break;
     case "download":
       program.verbose ? console.log("\n") : "";

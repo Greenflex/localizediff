@@ -1,8 +1,10 @@
-# LocaliseBizSync
+# localizediff
 
-_LocaliseBizSync est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_
+_localizediff est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_
 
-> [Comment traduire sur Symfony](./SYMFONY.md)
+Démo youtube:
+
+[![Démo](https://img.youtube.com/vi/howNUTq09Oo/0.jpg)](https://www.youtube.com/watch?v=howNUTq09Oo)
 
 ## Pré-requis
 
@@ -10,16 +12,8 @@ _NodeJs sur le serveur en version minimum 8_
 
 ## Installation
 
-- Npm
-
 ```bash
-npm install
-```
-
-- Yarn
-
-```bash
-yarn install
+npm -g install localizediff
 ```
 
 ## Logiciel
@@ -27,20 +21,20 @@ yarn install
 > Utiliser l'option `-v` afin d'afficher un maximum d'informations
 
 ```bash
-$ node localisebizsync.js -h
+$ localizediff -h
 
-  Usage: localisebizsync [options] <cmd>
+  Usage: localizediff [options] <cmd>
 
   Options:
 
     -V, --version                output the version number
     -v, --verbose                display verbose
-    -l, --language [language]    language from extract
+    -f, --from [language]        language from extract
     -d, --direction [direction]  use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )
     -h, --help                   output usage information
 
   Infos:
-	Write configuration in config.yaml file. Open README.md
+	Write configuration in localize.yaml file. Open README.md
 
   Commandes:
 	sync 	 synchronize translation with localise.biz
@@ -48,16 +42,16 @@ $ node localisebizsync.js -h
 	download downlaod translations file from localise.biz to local pathToTranslations
 
   Usages:
-	node localisebizsync.js sync
-	node localisebizsync.js -v -d up sync
-	node localisebizsync.js -l en extract
-	node localisebizsync.js -v -l fr extract
-	node localisebizsync.js -v download
+	localizediff sync
+	localizediff -v -d up sync
+	localizediff -l en extract
+	localizediff -v -f fr extract
+	localizediff -v download
 ```
 
 ### Configuration
 
-_La configuration du fichier se fait via un fichier nommé `config.yaml` (voir le fichier config.yaml.dist)_
+_La configuration du fichier se fait via un fichier nommé `localize.yaml` (voir le fichier localize.yaml.dist) à la racine du projet_
 
 ```yaml
 params:
@@ -65,7 +59,7 @@ params:
   languages: ["en", "fr"] # language do you want translate
   pathToTranslations: # path to local folder with all translation files (fr.json, en.json, es.json, ...)
   key: # key read and write localise.biz api
-  filter: reactjs # tag for separate symfony files translation and reactjs files translation
+  filter: reactjs # tag
   commandAfterSync: # command execute if files changed after synchronization (ex : "make --directory=/home/my-project yarn-install")
 ```
 
@@ -75,17 +69,17 @@ params:
 
 ## Initialiser mon projet
 
-1. Il faut choisir les langues dont le projet sera traduit.
+1.  Il faut choisir les langues dont le projet sera traduit.
 
 > Choisir les extensions de langue plutot que les pays par exemple pour l'anglais choisir `en`
 
-![img1](./documentation/images/img1.png)
-![img2](./documentation/images/img2.png)
+Aller sur le projet https://localise.biz/ et dans l'onglet "Manage" cliquer sur le "+" à coté de la langue principal . Faire une
+recherche avec le mot clé "en" et sélectionner [EN] English
 
-2. Générer une clé API read/write
+2.  Générer une clé API read/write
 
-![img3](./documentation/images/img3.png)
-![img4](./documentation/images/img4.png)
+Aller sur le projet https://localise.biz/ et dans le menu de droite cliquer sur la clé à molette et cliquer sur "API Keys" .
+En suite générer une key API dite "read and write".
 
 # Cas utilisations
 
@@ -101,27 +95,27 @@ params:
 
 _Étape n°1 : Mon fichier de configuration_
 
-config.yaml
+localize.yaml
 
 ```yaml
 params:
   localisebiz: https://localise.biz/api
   languages: ["fr", "en"]
   pathToTranslations: /path/to/translations
-  key: pn1pnDoAsRgY99sRkQ7NxukHSXCbXIzGw
+  key: pn1sRbXIzpnDokQ7NxukHSXCAsRgY99Gw
   filter: reactjs
 ```
 
 _Étape n°2 : Extraction du fichier de traduction français pour la traduction anglaise_
 
 ```bash
-$ node localisebizsync.js -v -l fr extract
+$ localizediff -v -l fr extract
 ```
 
 _Étape n°3: Synchroniser les traductions du projet en local vers localise.biz_
 
 ```bash
-$ node localisebizsync.js -v -d up sync
+$ localizediff -v -d up sync
 ```
 
 **2. Le projet est sur un serveur recette, ux ou prod**
@@ -136,21 +130,21 @@ $ node localisebizsync.js -v -d up sync
 
 _Étape n°1 : Mon fichier de configuration_
 
-config.yaml
+localize.yaml
 
 ```yaml
 params:
   localisebiz: https://localise.biz/api
   languages: ["fr", "en"]
   pathToTranslations: /path/to/translations
-  key: pn1pnDoAsRgY99sRkQ7NxukHSXCbXIzGw
+  key: pn1sRbXIzpnDokQ7NxukHSXCAsRgY99Gw
   filter: reactjs
-  commandAfterSync: "make --directory=/path/to/Makefile assets" # make assets execute `yarn build`
+  commandAfterSync: "make --directory=/path/to/Makefile yarn-build" # example make execute `yarn build`
 ```
 
-_Étape n°2 : Création d'un cron toutes les 15 minutes_
+_Étape n°2 : Création d'un cron toutes les 30 minutes_
 
-`*/30 * * * * node /path/to/LocaliseBizSync/localisebizsync.js sync >/dev/null 2>&1`
+`*/30 * * * * localizediff sync >/dev/null 2>&1`
 
 **3. Mettre à jours localise.biz**
 
@@ -165,7 +159,7 @@ _Étape n°2 : Création d'un cron toutes les 15 minutes_
 _Étape n°1 : Synchroniser les traductions du local vers localise.biz_
 
 ```bash
-$ node localisebizsync.js -v -d up sync
+$ localizediff -v -d up sync
 ```
 
 **4. Mettre à jours mon environement de développement**
@@ -181,7 +175,7 @@ $ node localisebizsync.js -v -d up sync
 _Étape n°1 : Synchroniser les traductions de localise.biz vers mon locale_
 
 ```bash
-$ node localisebizsync.js -v sync
+$ localizediff -v sync
 ```
 
 **5. Je ne veux pas que mes fichiers de traduction soient sur mon logiciel de gestion de versions Git**
@@ -205,5 +199,64 @@ Editer le fichier _.gitignore_
 _Étape n°2 : Télécharger les traductions de localise.biz vers mon locale_
 
 ```bash
-$ node localisebizsync.js -v download
+$ localizediff -v download
+```
+
+**6. React-intl**
+
+- _J'ai_
+
+  un projet qui utilise [react-intl](https://github.com/yahoo/react-intl)
+
+- _Je veux_
+
+  Extraire les clefs qui sont defini dans mon code par [defineMessages](https://github.com/yahoo/react-intl/wiki/API#definemessages) ou le composant [FormattedMessage](https://github.com/yahoo/react-intl/wiki/Components#formattedmessage) et uploader sur localise et les charger sur localise.biz
+
+_Étape n°1:_
+
+Edit le fichier yaml pour renseigner messagesFileName (par default: _messages_), pathToReactMessages:
+
+```yaml
+params:
+  localisebiz: https://localise.biz/api
+  languages:
+  pathToTranslations: /path/to/translations
+  pathToReactMessages: path/to/extracted/messages
+  messagesFileName: messages
+  key:
+  filter:
+  commandAfterSync:
+```
+
+_Étape n°2:_
+
+```bash
+$ extractmessages --help
+
+Usage: react-intl-cra <pattern> [options]
+
+<pattern> Glob pattern to specify files.
+          Needs to be surrounded with quotes to prevent shell globbing.
+          Guide to globs: https://github.com/isaacs/node-glob
+
+Options:
+  -o, --out-file  Output into a single file                             [string]
+  -h, --help      Show help                                            [boolean]
+  -v, --version   Show version number                                  [boolean]
+
+Examples:
+  react-intl-cra 'src/App.js'                   One file.
+  react-intl-cra 'src/**/*.js'                  Pattern to specify files
+  react-intl-cra 'src/**/*.js' -o message.json  Output into a single file.
+
+
+For more information go to https://github.com/evenchange4/react-intl-cra
+```
+
+_Étape n°3:_
+
+Syncro avec localise.biz (mets a jour seulement le francais):
+
+```bash
+  $ localizediff import
 ```
