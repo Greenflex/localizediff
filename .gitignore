@@ -1,2 +1,13 @@
 config.yaml
 node_modules/
+docker-compose.yml
+Dockerfile
+.npmrc
+.bash_history
+.node_repl_history
+env
+.config/
+.npm/
+.ssh/
+localize.yml
+translations/

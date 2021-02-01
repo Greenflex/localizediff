@@ -19,7 +19,7 @@
   "name": "localizediff",
   "description": "_LocaliseBizSync est un logiciel qui permet de synchroniser des fichiers de traduction au format json avec le logiciel SaaS de traduction [localise.biz/](https://localise.biz/) codé en [NodeJs](https://nodejs.org/en/)_",
   "version": "1.1.9",
-  "main": "localisebizsync.js",
+  "main": "localizediff.js",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -33,9 +33,9 @@
     "translation"
   ],
   "bin": {
-    "localizediff": "./localisebizsync.js",
+    "localizediff": "./localizediff.js",
     "extractmessages": "./react-intl-cra.js"
   },
-  "author": "AZOULAY Jordan <azoulay.jordan@gmail.com>",
+  "author": "Greenflex",
   "license": "ISC"
 }

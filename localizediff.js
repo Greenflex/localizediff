@@ -4,14 +4,16 @@
  * @description Program for sync local translation and localise.biz
  */
 
-let program = require("commander");
-let syncProgram = require("./modules/sync");
-let extractProgram = require("./modules/extract");
-let downloadProgram = require("./modules/download");
-let importProgram = require("./modules/import");
+const program = require("commander");
+const syncProgram = require("./modules/sync");
+const extractProgram = require("./modules/extract");
+const downloadProgram = require("./modules/download");
+const importProgram = require("./modules/import");
 
 let version = "1.1.9-stable";
 let cmdValue = null;
+
+console.log("hello 1");
 
 program
   .version(version)
@@ -21,16 +23,34 @@ program
     "-d, --direction [direction]",
     "use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )"
   )
+  .option("-c, --config-file [path]", "path to config file")
+  .option("-l, --localisebiz [url]", "url to localise.biz api")
+  .option("-k, --key [key]", "key to localise.biz/")
+  // Écrire une meilleure doc @seb @christian
+  .option("-r, --path-to-react-messages [path]", "path to react messages")
+  // Sert au module import à vérifier @jordan @seb @christian
+  .option("-m, --messages-file-name [message]", "message file name")
+  .option(
+    "-p, --path-to-translations [path]",
+    "path to local translation folder"
+  )
+  .option("-la, --languages [languages]", "array languages you needed")
+  .option('-f, --filter [filter]"', "tag to use")
+  .option(
+    "-ca, --command-after-sync [command]",
+    "command to execute after sync if translation file changed"
+  )
   .usage("[options] <cmd>")
   .arguments("<cmd>")
-  .action(function(cmd, env) {
+  .action(function (cmd, env) {
     cmdValue = cmd;
   });
 
+console.log("hello");
 init();
 
 function init() {
-  program.on("--help", function() {
+  program.on("--help", function () {
     console.log("  Infos:");
     console.log("\tWrite configuration in localize.yaml file. Open README.md");
     console.log("\n  Commandes:");
