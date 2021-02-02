@@ -7,8 +7,12 @@ const fs = require("fs");
 const config = require("./config");
 const chalk = require("chalk");
 const cmd = require("node-cmd");
+const urlUtility = require("../utils/url");
+const logUtility = require("../utils/log");
+const log = logUtility.log;
+const error = logUtility.error;
 
-module.exports = (function() {
+module.exports = (function () {
   let options = null;
   let verbose = false;
   let direction = null;
@@ -23,20 +27,19 @@ module.exports = (function() {
 
     options = config.getConfig();
 
-    verbose
-      ? console.log("\t\t\t\t" + chalk.bgCyan("START SYNCHRONIZATION"))
-      : "";
+    verbose ? log("\t\t\t\t" + chalk.bgCyan("START SYNCHRONIZATION")) : "";
+
+    const parametersUri = urlUtility.generateURIParameters(options);
 
     for (let i = 0; i < options.languages.length; i++) {
       const language = options.languages[i];
       verbose
-        ? console.log("Language " + chalk.underline.bold(language) + " :::::")
+        ? log("Language " + chalk.underline.bold(language) + " :::::")
         : "";
-      const url = `${
-        options.localisebiz
-      }export/locale/${language}.json?filter=reactjs&format=script`;
 
-      verbose ? console.log(chalk.italic(`\tLoad API file ${url}`)) : "";
+      const url = `${options.localisebiz}export/locale/${language}.json${parametersUri}`;
+
+      verbose ? log(chalk.italic(`\tLoad API file ${url}`)) : "";
 
       try {
         /** @var fileDev local translation file  */
@@ -45,11 +48,9 @@ module.exports = (function() {
         );
 
         verbose
-          ? console.log(
+          ? log(
               chalk.italic(
-                `\tLoad local file ${
-                  options.pathToTranslations
-                }${language}.json`
+                `\tLoad local file ${options.pathToTranslations}${language}.json`
               )
             )
           : "";
@@ -59,14 +60,12 @@ module.exports = (function() {
             url: url,
             json: true,
             headers: {
-              Authorization: `Loco ${options.key}`
-            }
+              Authorization: `Loco ${options.key}`,
+            },
           },
           (err, res, data) => {
             if (err) {
-              verbose
-                ? console.error(chalk.red(`Http Error :::: ${err} `))
-                : "";
+              verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
               process.exit(0);
             } else if (res.statusCode === 200) {
               /** @var filePo translation file in localise.biz */
@@ -76,19 +75,19 @@ module.exports = (function() {
                 updateFileDev(finalFile, language);
                 updateFilePo(finalFile, language);
               } catch (e) {
-                console.error(chalk.red(e));
+                error(chalk.red(e));
                 process.exit(0);
               }
             } else {
               verbose
-                ? console.error(chalk.red(`Http Error :::: ${res.statusCode} `))
+                ? error(chalk.red(`Http Error :::: ${res.statusCode} `))
                 : "";
               process.exit(0);
             }
           }
         );
       } catch (e) {
-        console.error(
+        error(
           chalk.red(
             `File ${options.pathToTranslations}${language}.json not found`
           )
@@ -105,7 +104,7 @@ module.exports = (function() {
    * @description Create new translation file with translation changed by product owner and add new key translation
    */
   function sync(fileDev, filePo) {
-    verbose ? console.log("") : "";
+    verbose ? log("") : "";
 
     let file = {};
     let nbModifications = 0;
@@ -117,13 +116,11 @@ module.exports = (function() {
       } else if (filePo[key] === undefined) {
         file[key] = fileDev[key];
         nbNewKey++;
-        verbose
-          ? console.log(chalk.dim(`\tNew translation key : '${key}'`))
-          : "";
+        verbose ? log(chalk.dim(`\tNew translation key : '${key}'`)) : "";
       } else {
         file[key] = direction === "up" ? fileDev[key] : filePo[key];
         verbose
-          ? console.log(
+          ? log(
               chalk.dim(`\tKey '${key}' updated with value : '${filePo[key]}'`)
             )
           : "";
@@ -135,27 +132,25 @@ module.exports = (function() {
       if (fileDev[key] === undefined) {
         file[key] = filePo[key];
         nbNewKey++;
-        verbose
-          ? console.log(chalk.dim(`\tNew translation key : '${key}'`))
-          : "";
+        verbose ? log(chalk.dim(`\tNew translation key : '${key}'`)) : "";
         nbModifications++;
       }
     }
     if (verbose) {
-      console.log("");
-      console.log("\t----------------------");
-      console.log(`\tModifications : ${nbModifications}`);
-      console.log(`\tNew translation keys : ${nbNewKey}`);
-      console.log("\t----------------------");
+      log("");
+      log("\t----------------------");
+      log(`\tModifications : ${nbModifications}`);
+      log(`\tNew translation keys : ${nbNewKey}`);
+      log("\t----------------------");
     }
 
     if (nbModifications > 0 && options.commandAfterSync) {
       cmd.get(options.commandAfterSync, (err, data, stderr) => {
         if (err) {
-          console.log(chalk.red(`Command ${options.commandAfterSync} fail!`));
+          log(chalk.red(`Command ${options.commandAfterSync} fail!`));
           process.exit(0);
         } else {
-          verbose ? console.log(data) : "";
+          verbose ? log(data) : "";
         }
       });
     }
@@ -173,21 +168,17 @@ module.exports = (function() {
     fs.writeFile(
       `${options.pathToTranslations}${language}.json`,
       JSON.stringify(finalFile, null, 2),
-      err => {
+      (err) => {
         if (err) {
-          console.error(
+          error(
             chalk.red(
-              `Can't write in file ${
-                options.pathToTranslations
-              }${language}.json`
+              `Can't write in file ${options.pathToTranslations}${language}.json`
             )
           );
           process.exit(0);
         } else {
           verbose
-            ? console.log(
-                `\n${options.pathToTranslations}${language}.json updated!`
-              )
+            ? log(`\n${options.pathToTranslations}${language}.json updated!`)
             : "";
         }
       }
@@ -201,30 +192,24 @@ module.exports = (function() {
    * @description Update translation file to localise.biz
    */
   function updateFilePo(finalFile, language) {
-    const url = `${
-      options.localisebiz
-    }import/json?tag-all=reactjs&locale=${language}`;
+    const url = `${options.localisebiz}import/json?tag-all=reactjs&locale=${language}`;
     request.post(
       {
         url: url,
         json: true,
         headers: {
-          Authorization: `Loco ${options.key}`
+          Authorization: `Loco ${options.key}`,
         },
-        body: finalFile
+        body: finalFile,
       },
       (err, res, data) => {
         if (err) {
-          verbose ? console.error(chalk.red(`Http Error :::: ${err} `)) : "";
+          verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
           process.exit(0);
         } else if (res.statusCode === 200) {
-          verbose
-            ? console.log(`Localise.biz with language ${language} updated!`)
-            : "";
+          verbose ? log(`Localise.biz with language ${language} updated!`) : "";
         } else {
-          verbose
-            ? console.error(chalk.red(`Http Error :::: ${res.statusCode} `))
-            : "";
+          verbose ? error(chalk.red(`Http Error :::: ${res.statusCode} `)) : "";
           process.exit(0);
         }
       }
@@ -232,6 +217,6 @@ module.exports = (function() {
   }
 
   return {
-    start: start
+    start: start,
   };
 })();

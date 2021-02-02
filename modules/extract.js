@@ -2,10 +2,12 @@
  * @author AZOULAY Jordan <jazoulay@greenflex.com>
  * @description Compare translation local files with localise.biz translation files language by language
  */
-const request = require("request");
 const fs = require("fs");
 const config = require("./config");
 const chalk = require("chalk");
+const logUtility = require("../utils/log");
+const log = logUtility.log;
+const error = logUtility.error;
 
 module.exports = (function () {
   let options = null;
@@ -20,9 +22,7 @@ module.exports = (function () {
 
     if (languageFrom === undefined) {
       verbose
-        ? console.error(
-            chalk.red("Use -f option for select language from extract")
-          )
+        ? error(chalk.red("Use -f option for select language from extract"))
         : "";
       process.exit(0);
     }
@@ -32,7 +32,7 @@ module.exports = (function () {
     options = config.getConfig();
     const { languages, pathToTranslations } = options;
 
-    verbose ? console.log("\t\t\t\t" + chalk.bgCyan("START EXTRACT")) : "";
+    verbose ? log("\t\t\t\t" + chalk.bgCyan("START EXTRACT")) : "";
 
     for (let i = 0; i < languages.length; i++) {
       const language = languages[i];
@@ -42,7 +42,7 @@ module.exports = (function () {
       }
 
       verbose
-        ? console.log("Language " + chalk.underline.bold(language) + " :::::")
+        ? log("Language " + chalk.underline.bold(language) + " :::::")
         : "";
 
       let fileDev = null;
@@ -54,7 +54,7 @@ module.exports = (function () {
           fs.readFileSync(`${pathToTranslations}${languageToExtract}.json`)
         );
       } catch (e) {
-        console.error(
+        error(
           chalk.red(
             `File ${pathToTranslations}${languageToExtract}.json not found`
           )
@@ -75,14 +75,14 @@ module.exports = (function () {
             fs.readFileSync(`${pathToTranslations}${languageToExtract}.json`)
           );
         } catch (e) {
-          console.error(
+          error(
             chalk.red(`Can't create ${pathToTranslations}${language}.json file`)
           );
           process.exit(0);
         }
 
         verbose
-          ? console.log(
+          ? log(
               chalk.dim(
                 `File ${pathToTranslations}${language}.json created from ${pathToTranslations}${languageToExtract}.json`
               )
@@ -92,7 +92,7 @@ module.exports = (function () {
       }
 
       verbose
-        ? console.log(
+        ? log(
             chalk.italic(
               `\tLoad local file ${pathToTranslations}${language}.json`
             )
@@ -103,7 +103,7 @@ module.exports = (function () {
       try {
         updateFileDev(finalFile, language);
       } catch (e) {
-        console.error(chalk.red(e));
+        error(chalk.red(e));
         process.exit(0);
       }
     }
@@ -116,7 +116,7 @@ module.exports = (function () {
    * @description Add key in language file from extract file
    */
   function sync(fileDev, fileToExtract) {
-    verbose ? console.log("") : "";
+    verbose ? log("") : "";
 
     let file = {};
     let nbModifications = 0;
@@ -126,19 +126,17 @@ module.exports = (function () {
       if (fileDev[key] === undefined) {
         file[key] = fileToExtract[key];
         nbNewKey++;
-        verbose
-          ? console.log(chalk.dim(`\tNew translation key : '${key}'`))
-          : "";
+        verbose ? log(chalk.dim(`\tNew translation key : '${key}'`)) : "";
       } else {
         file[key] = fileDev[key];
       }
     }
     if (verbose) {
-      console.log("");
-      console.log("\t----------------------");
-      console.log(`\tModifications : ${nbModifications}`);
-      console.log(`\tNew translation keys : ${nbNewKey}`);
-      console.log("\t----------------------");
+      log("");
+      log("\t----------------------");
+      log(`\tModifications : ${nbModifications}`);
+      log(`\tNew translation keys : ${nbNewKey}`);
+      log("\t----------------------");
     }
 
     return file;
@@ -157,7 +155,7 @@ module.exports = (function () {
       JSON.stringify(finalFile, null, 2),
       (err) => {
         if (err) {
-          console.error(
+          error(
             chalk.red(
               `Can't write in file ${pathToTranslations}${language}.json`
             )
@@ -165,7 +163,7 @@ module.exports = (function () {
           process.exit(0);
         } else {
           verbose
-            ? console.log(`\n${pathToTranslations}${language}.json updated!`)
+            ? log(`\n${pathToTranslations}${language}.json updated!`)
             : "";
         }
       }
