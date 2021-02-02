@@ -7,8 +7,13 @@ module.exports = (function () {
     console.error(info);
   }
 
+  function clear() {
+    console.clear();
+  }
+
   return {
     log,
     error,
+    clear,
   };
 })();

@@ -1,7 +1,29 @@
 params:
   localisebiz: https://localise.biz/api
+  key:
   languages: ["en", "fr"]
   pathToTranslations:
-  key:
-  filter: reactjs
-  commandAfterSync:
+  commandAfterSync: # command to execute if files changed after synchronization (ex : "make --directory=/home/my-project yarn-install")
+  filter:
+  format:
+  index:
+  source:
+  namespace:
+  fallback:
+  order:
+  status:
+  printf:
+  charset:
+  breaks:
+  noComments:
+  noFolding:
+  async:
+  path:
+  ignoreNew:
+  ignoreExisting:
+  tagNew:
+  tagAll:
+  unTagAll:
+  tagUpdated:
+  tagAbsent:
+  unTagAbsent:

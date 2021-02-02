@@ -171,6 +171,6 @@ module.exports = (function () {
   }
 
   return {
-    start: start,
+    start,
   };
 })();

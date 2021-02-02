@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 /**
  * @author AZOULAY Jordan <jazoulay@greenflex.com>
- * @description Program for synchronize local translation and localise.biz
+ * @description localizediff is a software that allows you to synchronize translation files in json format with SaaS translation software [localise.biz/](https://localise.biz/)
  */
-
 const program = require("commander");
 const syncProgram = require("./modules/sync");
 const extractProgram = require("./modules/extract");

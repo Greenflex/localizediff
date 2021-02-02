@@ -202,7 +202,7 @@ module.exports = (function () {
         },
         body: finalFile,
       },
-      (err, res, data) => {
+      (err, res, _data) => {
         if (err) {
           verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
           process.exit(0);
@@ -217,6 +217,6 @@ module.exports = (function () {
   }
 
   return {
-    start: start,
+    start,
   };
 })();

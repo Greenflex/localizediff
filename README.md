@@ -116,10 +116,6 @@ localizediff --key="" --localisebiz="" --languages=['en', 'fr']
 
 Download translation files language by language from localise.biz.
 
-```bash
-localizediff -v download
-```
-
 ## Extract
 
 Extract all key and value from file {--from.json} for all languages configured.
