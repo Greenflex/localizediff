@@ -1,9 +1,9 @@
 module.exports = (function () {
   function generateURIParameters(options) {
     let parametersUri = "?";
-    for (let key in options) {
+    Object.keys(options).forEach((key) => {
       const value = options[key];
-      if (!value) continue;
+      if (!value) return;
       switch (key) {
         case "localisebiz":
         case "key":
@@ -12,7 +12,7 @@ module.exports = (function () {
         case "pathToTranslations":
         case "languages":
         case "commandAfterSync":
-          continue;
+          return;
         case "noComments":
           parametersUri += `no-comments=${options[key]}&`;
           break;
@@ -42,6 +42,7 @@ module.exports = (function () {
           break;
         case "unTagAbsent":
           parametersUri += `untag-absent=${options[key]}&`;
+          break;
         case "deleteAbsent":
           parametersUri += `delete-absent=${options[key]}&`;
           break;
@@ -50,7 +51,8 @@ module.exports = (function () {
           parametersUri += `${key}=${options[key]}&`;
           break;
       }
-    }
+    });
+
     parametersUri = parametersUri.slice(0, -1);
     return parametersUri;
   }

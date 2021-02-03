@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "./modules"
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "eslint.packageManager": "yarn",
+    "eslint.run": "onSave",
+    "eslint.nodePath": "./node_modules",
+    "eslint.options": {
+      "configFile": "./.eslintrc"
+    },
+    "javascript.validate.enable": false,
+    "prettier.disableLanguages": ["json", "yaml", "yml", "php"],
+    "eslint.validate": ["javascript"],
+    "workbench.colorCustomizations": {},
+    "emmet.showAbbreviationSuggestions": false,
+    "emmet.showExpandedAbbreviation": "never"
+  }
+}

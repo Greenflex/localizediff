@@ -4,10 +4,11 @@
  */
 const request = require("request");
 const fs = require("fs");
-const config = require("./config");
 const chalk = require("chalk");
+const config = require("./config");
 const urlUtility = require("../utils/url");
 const logUtility = require("../utils/log");
+
 const log = logUtility.log;
 const error = logUtility.error;
 
@@ -15,87 +16,15 @@ module.exports = (function () {
   let options = null;
   let verbose = false;
 
-  async function start(v) {
-    if (v) {
-      verbose = true;
-      config.setVerbose(true);
-    }
-
-    options = config.getConfig();
-    if (!required(options)) {
-      process.exit(0);
-    }
-
-    verbose
-      ? log("\t\t\t\t" + chalk.bgCyan("START SYNCHRONIZATION REACT"))
-      : "";
-
-    const url = `${options.localisebiz}export/locale/fr-x-custom.json?format=script`;
-    verbose ? log(chalk.italic(`\tLoad API file ${url}`)) : "";
-
-    try {
-      /** @var fileDev local extraced messages file  */
-      let fileDev = JSON.parse(
-        fs.readFileSync(
-          `${process.cwd()}/${options.pathToReactMessages}${
-            options.messagesFileName
-          }.json`
-        )
-      );
-      verbose
-        ? log(
-            chalk.italic(
-              `\tLoad local file ${process.cwd()}/${
-                options.pathToReactMessages
-              }${options.messagesFileName}.json`
-            )
-          )
-        : "";
-
-      // get file from localise
-      request.get(
-        {
-          url: url,
-          json: true,
-          headers: {
-            Authorization: `Loco ${options.key}`,
-          },
-        },
-        function (err, res, data) {
-          if (err) {
-            verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
-            process.exit(0);
-          } else if (res.statusCode === 200) {
-            /** @var filePo translation file in localise.biz */
-            const filePo = JSON.parse(JSON.stringify(data));
-            const finalFile = sync(fileDev, filePo);
-            try {
-              updateFileLocalize(finalFile);
-            } catch (err) {
-              verbose ? error(chalk.red(`error with Upload :::: ${err} `)) : "";
-            }
-          } else {
-            verbose
-              ? error(chalk.red(`Http Error :::: ${res.statusCode} `))
-              : "";
-            process.exit(0);
-          }
-        }
-      );
-    } catch (err) {
-      log("error", err);
-    }
-  }
-
   /**
    *
-   * @param {*} options
+   * @param {*} opt
    * @description check if all options required is initialized
    */
-  function required(options) {
+  function required(opt) {
     let allRequired = true;
-    for (const key in options) {
-      const value = options[key];
+    Object.keys(opt).forEach((key) => {
+      const value = opt[key];
       if (
         (key === "localisebiz" ||
           key === "languages" ||
@@ -107,7 +36,7 @@ module.exports = (function () {
         error(chalk.red(`Config ${key} is required`));
         allRequired = false;
       }
-    }
+    });
     return allRequired;
   }
 
@@ -147,18 +76,85 @@ module.exports = (function () {
         },
         body: finalFile,
       },
-      (err, res, data) => {
+      (err, res) => {
         if (err) {
-          verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
+          if (verbose) error(chalk.red(`Http Error :::: ${err} `));
           process.exit(0);
         } else if (res.statusCode === 200) {
-          verbose ? log(`Localise.biz with language fr updated!`) : "";
+          if (verbose) log(`Localise.biz with language fr updated!`);
         } else {
-          verbose ? error(chalk.red(`Http Error :::: ${res.statusCode} `)) : "";
+          if (verbose) error(chalk.red(`Http Error :::: ${res.statusCode} `));
           process.exit(0);
         }
       }
     );
+  }
+
+  async function start(v) {
+    if (v) {
+      verbose = true;
+      config.setVerbose(true);
+    }
+
+    options = config.getConfig();
+    if (!required(options)) {
+      process.exit(0);
+    }
+
+    if (verbose) log(chalk.bgCyan("\t\t\t\tSTART SYNCHRONIZATION REACT"));
+
+    const url = `${options.localisebiz}export/locale/fr-x-custom.json?format=script`;
+    if (verbose) log(chalk.italic(`\tLoad API file ${url}`));
+
+    try {
+      /** @var fileDev local extraced messages file  */
+      const fileDev = JSON.parse(
+        fs.readFileSync(
+          `${process.cwd()}/${options.pathToReactMessages}${
+            options.messagesFileName
+          }.json`
+        )
+      );
+      if (verbose)
+        log(
+          chalk.italic(
+            `\tLoad local file ${process.cwd()}/${options.pathToReactMessages}${
+              options.messagesFileName
+            }.json`
+          )
+        );
+
+      // get file from localise
+      request.get(
+        {
+          url,
+          json: true,
+          headers: {
+            Authorization: `Loco ${options.key}`,
+          },
+        },
+        function (err, res, data) {
+          if (err) {
+            if (verbose) error(chalk.red(`Http Error :::: ${err} `));
+            process.exit(0);
+          } else if (res.statusCode === 200) {
+            /** @var filePo translation file in localise.biz */
+            const filePo = JSON.parse(JSON.stringify(data));
+            const finalFile = sync(fileDev, filePo);
+            try {
+              updateFileLocalize(finalFile);
+            } catch (erro) {
+              if (verbose) error(chalk.red(`error with Upload :::: ${erro} `));
+            }
+          } else {
+            if (verbose) error(chalk.red(`Http Error :::: ${res.statusCode} `));
+            process.exit(0);
+          }
+        }
+      );
+    } catch (err) {
+      log("error", err);
+    }
   }
 
   return {

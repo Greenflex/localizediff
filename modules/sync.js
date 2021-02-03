@@ -4,11 +4,13 @@
  */
 const request = require("request");
 const fs = require("fs");
-const config = require("./config");
 const chalk = require("chalk");
 const cmd = require("node-cmd");
+
+const config = require("./config");
 const urlUtility = require("../utils/url");
 const logUtility = require("../utils/log");
+
 const log = logUtility.log;
 const error = logUtility.error;
 
@@ -17,99 +19,15 @@ module.exports = (function () {
   let verbose = false;
   let direction = "down";
 
-  function start(v, d) {
-    if (v) {
-      verbose = true;
-      config.setVerbose(true);
-    }
-
-    direction = d;
-
-    options = config.getConfig();
-
-    if (!required(options)) {
-      process.exit(0);
-    }
-
-    const { languages, localisebiz, pathToTranslations, key } = options;
-
-    verbose ? log("\t\t\t\t" + chalk.bgCyan("START SYNCHRONIZATION")) : "";
-
-    const parametersUri = urlUtility.generateURIParameters(options);
-
-    for (let i = 0; i < languages.length; i++) {
-      const language = languages[i];
-      verbose
-        ? log("Language " + chalk.underline.bold(language) + " :::::")
-        : "";
-
-      const url = `${localisebiz}export/locale/${language}.json${parametersUri}`;
-
-      verbose ? log(chalk.italic(`\tLoad API file ${url}`)) : "";
-
-      try {
-        /** @var localFile local translation file  */
-        const localFile = JSON.parse(
-          fs.readFileSync(`${pathToTranslations}${language}.json`)
-        );
-
-        verbose
-          ? log(
-              chalk.italic(
-                `\tLoad local file ${pathToTranslations}${language}.json`
-              )
-            )
-          : "";
-
-        request.get(
-          {
-            url: url,
-            json: true,
-            headers: {
-              Authorization: `Loco ${key}`,
-            },
-          },
-          (err, res, data) => {
-            if (err) {
-              verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
-              process.exit(0);
-            } else if (res.statusCode === 200) {
-              /** @var localiseFile translation file in localise.biz */
-              const localiseFile = JSON.parse(JSON.stringify(data));
-              const finalFile = sync(localFile, localiseFile);
-              try {
-                updateLocalFile(finalFile, language);
-                updateLocaliseFile(finalFile, language);
-              } catch (e) {
-                error(chalk.red(e));
-                process.exit(0);
-              }
-            } else {
-              verbose
-                ? error(chalk.red(`Http Error :::: ${res.statusCode} `))
-                : "";
-              process.exit(0);
-            }
-          }
-        );
-      } catch (e) {
-        error(
-          chalk.red(`File ${pathToTranslations}${language}.json not found`)
-        );
-        process.exit(0);
-      }
-    }
-  }
-
   /**
    *
-   * @param {*} options
+   * @param {*} opt
    * @description check if all options required is initialized
    */
-  function required(options) {
+  function required(opt) {
     let allRequired = true;
-    for (const key in options) {
-      const value = options[key];
+    Object.keys(opt).forEach((key) => {
+      const value = opt[key];
       if (
         (key === "localisebiz" ||
           key === "languages" ||
@@ -117,10 +35,10 @@ module.exports = (function () {
           key === "pathToTranslations") &&
         value === undefined
       ) {
-        verbose ? error(chalk.red(`Config ${key} is required`)) : "";
+        if (verbose) error(chalk.red(`Config ${key} is required`));
         allRequired = false;
       }
-    }
+    });
     return allRequired;
   }
 
@@ -131,41 +49,41 @@ module.exports = (function () {
    * @description Create new translation file with translation changed by product owner and add new key translation
    */
   function sync(localFile, localiseFile, opt = options) {
-    verbose ? log("") : "";
+    if (verbose) log("");
 
     const { commandAfterSync } = opt;
-    let file = {};
+    const file = {};
     let nbModifications = 0;
     let nbNewKey = 0;
 
-    for (let key in localFile) {
+    Object.keys(localFile).forEach((key) => {
       if (localFile[key] === localiseFile[key]) {
         file[key] = localiseFile[key];
       } else if (localiseFile[key] === undefined) {
         file[key] = localFile[key];
-        nbNewKey++;
-        verbose ? log(chalk.dim(`\tNew translation key : '${key}'`)) : "";
+        nbNewKey += 1;
+        if (verbose) log(chalk.dim(`\tNew translation key : '${key}'`));
       } else {
         file[key] = direction === "up" ? localFile[key] : localiseFile[key];
-        verbose
-          ? log(
-              chalk.dim(
-                `\tKey '${key}' updated with value : '${localiseFile[key]}'`
-              )
+        if (verbose)
+          log(
+            chalk.dim(
+              `\tKey '${key}' updated with value : '${localiseFile[key]}'`
             )
-          : "";
-        nbModifications++;
+          );
+        nbModifications += 1;
       }
-    }
+    });
+
     // check if new key in localiseFile ( localise.biz )
-    for (let key in localiseFile) {
+    Object.keys(localiseFile).forEach((key) => {
       if (localFile[key] === undefined) {
         file[key] = localiseFile[key];
-        nbNewKey++;
-        verbose ? log(chalk.dim(`\tNew translation key : '${key}'`)) : "";
-        nbModifications++;
+        nbNewKey += 1;
+        if (verbose) log(chalk.dim(`\tNew translation key : '${key}'`));
+        nbModifications += 1;
       }
-    }
+    });
     if (verbose) {
       log("");
       log("\t----------------------");
@@ -175,12 +93,12 @@ module.exports = (function () {
     }
 
     if (nbModifications > 0 && commandAfterSync) {
-      cmd.get(commandAfterSync, (err, data, stderr) => {
+      cmd.get(commandAfterSync, (err, data) => {
         if (err) {
           log(chalk.red(`Command ${commandAfterSync} fail!`));
           process.exit(0);
-        } else {
-          verbose ? log(data) : "";
+        } else if (verbose) {
+          log(data);
         }
       });
     }
@@ -207,10 +125,8 @@ module.exports = (function () {
             )
           );
           process.exit(0);
-        } else {
-          verbose
-            ? log(`\n${pathToTranslations}${language}.json updated!`)
-            : "";
+        } else if (verbose) {
+          log(`\n${pathToTranslations}${language}.json updated!`);
         }
       }
     );
@@ -234,18 +150,97 @@ module.exports = (function () {
         },
         body: finalFile,
       },
-      (err, res, _data) => {
+      (err, res) => {
         if (err) {
-          verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
+          if (verbose) error(chalk.red(`Http Error :::: ${err} `));
           process.exit(0);
-        } else if (res.statusCode === 200) {
-          verbose ? log(`Localise.biz with language ${language} updated!`) : "";
+        } else if (res.statusCode === 200 && verbose) {
+          log(`Localise.biz with language ${language} updated!`);
         } else {
-          verbose ? error(chalk.red(`Http Error :::: ${res.statusCode} `)) : "";
+          if (verbose) error(chalk.red(`Http Error :::: ${res.statusCode} `));
           process.exit(0);
         }
       }
     );
+  }
+
+  function start(v, d) {
+    if (v) {
+      verbose = true;
+      config.setVerbose(true);
+    }
+
+    direction = d;
+
+    options = config.getConfig();
+
+    if (!required(options)) {
+      process.exit(0);
+    }
+
+    const { languages, localisebiz, pathToTranslations, key } = options;
+
+    if (verbose) log("\t\t\t\t" + chalk.bgCyan("START SYNCHRONIZATION"));
+
+    const parametersUri = urlUtility.generateURIParameters(options);
+
+    for (let i = 0; i < languages.length; i += 1) {
+      const language = languages[i];
+      if (verbose) log(chalk.underline.bold(`Language ${language} :::::`));
+
+      const url = `${localisebiz}export/locale/${language}.json${parametersUri}`;
+
+      if (verbose) log(chalk.italic(`\tLoad API file ${url}`));
+
+      try {
+        /** @var localFile local translation file  */
+        const localFile = JSON.parse(
+          fs.readFileSync(`${pathToTranslations}${language}.json`)
+        );
+
+        if (verbose)
+          log(
+            chalk.italic(
+              `\tLoad local file ${pathToTranslations}${language}.json`
+            )
+          );
+
+        request.get(
+          {
+            url: url,
+            json: true,
+            headers: {
+              Authorization: `Loco ${key}`,
+            },
+          },
+          (err, res, data) => {
+            if (err) {
+              if (verbose) error(chalk.red(`Http Error :::: ${err} `));
+              process.exit(0);
+            } else if (res.statusCode === 200) {
+              /** @var localiseFile translation file in localise.biz */
+              const localiseFile = JSON.parse(JSON.stringify(data));
+              const finalFile = sync(localFile, localiseFile);
+              try {
+                updateLocalFile(finalFile, language);
+                updateLocaliseFile(finalFile, language);
+              } catch (e) {
+                error(chalk.red(e));
+                process.exit(0);
+              }
+            } else if (verbose) {
+              error(chalk.red(`Http Error :::: ${res.statusCode} `));
+              process.exit(0);
+            }
+          }
+        );
+      } catch (e) {
+        error(
+          chalk.red(`File ${pathToTranslations}${language}.json not found`)
+        );
+        process.exit(0);
+      }
+    }
   }
 
   return {

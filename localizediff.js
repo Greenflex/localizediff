@@ -9,9 +9,11 @@ const extractProgram = require("./modules/extract");
 const downloadProgram = require("./modules/download");
 const importProgram = require("./modules/import");
 const logUtility = require("./utils/log");
-const log = logUtility.log;
 
-let version = "2.0.0";
+const log = logUtility.log;
+const warn = logUtility.warn;
+
+const version = "2.0.0";
 let cmdValue = null;
 
 program
@@ -132,11 +134,9 @@ program
   )
   .usage("[options] <cmd>")
   .arguments("<cmd>")
-  .action(function (cmd, env) {
+  .action(function (cmd) {
     cmdValue = cmd;
   });
-
-init();
 
 function init() {
   program.on("--help", function () {
@@ -158,10 +158,11 @@ function init() {
     log("\tlocalizediff -v download");
   });
   program.parse(process.argv);
+  const { verbose } = program;
 
   switch (cmdValue) {
     case "sync":
-      program.verbose ? log("\n") : "";
+      if (verbose) log("\n");
       syncProgram.start(
         program.verbose,
         program.direction ? program.direction : "down",
@@ -169,18 +170,20 @@ function init() {
       );
       break;
     case "import":
-      program.verbose ? log("import react-intl messages") : "";
+      if (verbose) log("import react-intl messages");
       importProgram.start(program.verbose);
       break;
     case "extract":
-      program.verbose ? log("\n") : "";
+      if (verbose) log("\n");
       extractProgram.start(program.verbose, program.from);
       break;
     case "download":
-      program.verbose ? log("\n") : "";
+      if (verbose) log("\n");
       downloadProgram.start(program.verbose);
       break;
     default:
-      program.verbose ? console.warn("WARN ::::: No command") : "";
+      if (verbose) warn("WARN ::::: No command");
   }
 }
+
+init();

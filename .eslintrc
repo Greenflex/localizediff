@@ -4,5 +4,6 @@
     "node": true
   },
   "root": true,
-  "extends": ["airbnb", "prettier"]
+  "extends": ["airbnb", "prettier"],
+  "ignorePatterns": "*.test*"
 }

@@ -10,21 +10,19 @@ function extractMessages(pattern /* : string */) /* : string */ {
   const srcPaths = glob.sync(pattern, { absolute: true });
   const relativeSrcPaths = glob.sync(pattern);
   const contents = srcPaths
-    .filter(p => {
+    .filter((p) => {
       const ext = path.extname(p);
-      return (
-        ext === ".js" || ext === ".ts" || (ext === ".tsx") | (ext === ".jsx")
-      );
+      return ext === ".js" || ext === ".ts" || ext === ".tsx" || ext === ".jsx";
     })
-    .map(p => [p, fs.readFileSync(p, "utf-8")]);
+    .map((p) => [p, fs.readFileSync(p, "utf-8")]);
 
   const messages = contents
-    .map(content => {
+    .map((content) => {
       return babel.transform(content[1], {
         filename: content[0],
         presets: [["react-app", { flow: true, typescript: true }]],
         plugins: ["babel-plugin-react-intl"],
-        babelrc: false
+        babelrc: false,
       });
     })
     .map(R.path(["metadata", "react-intl", "messages"]));

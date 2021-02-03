@@ -16,7 +16,8 @@ const extract = require("./modules/react-extract-local");
 // CLI Arguments
 const {
   _: [pattern],
-  outFile
+  outFile,
+  // eslint-disable-next-line
 } = require("yargs")
   .usage(
     `Usage: ${chalk.green("$0")} <pattern> [options]\n
@@ -30,7 +31,7 @@ const {
     alias: "out-file",
     describe: "Output into a single file",
     nargs: 1,
-    type: "string"
+    type: "string",
   })
   .alias("h", "help")
   .version(pkg.version)

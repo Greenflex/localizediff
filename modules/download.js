@@ -4,90 +4,26 @@
  */
 const request = require("request");
 const fs = require("fs");
-const config = require("./config");
 const chalk = require("chalk");
+const config = require("./config");
 const urlUtility = require("../utils/url");
 const logUtility = require("../utils/log");
-const log = logUtility.log;
-const error = logUtility.error;
+
+const { log, error } = logUtility;
 
 module.exports = (function () {
   let options = null;
   let verbose = false;
 
-  function start(v) {
-    if (v) {
-      verbose = true;
-      config.setVerbose(true);
-    }
-
-    options = config.getConfig();
-    if (!required(options)) {
-      process.exit(0);
-    }
-
-    verbose ? log("\t\t\t\t" + chalk.bgCyan("START DOWNLOAD")) : "";
-
-    for (let i = 0; i < options.languages.length; i++) {
-      const language = options.languages[i];
-      verbose
-        ? log("Language " + chalk.underline.bold(language) + " :::::")
-        : "";
-      const parametersUri = urlUtility.generateURIParameters(options);
-      const url = `${options.localisebiz}export/locale/${language}.json${parametersUri}`;
-
-      verbose ? log(chalk.italic(`\tLoad API file ${url}`)) : "";
-
-      try {
-        request.get(
-          {
-            url: url,
-            json: true,
-            headers: {
-              Authorization: `Loco ${options.key}`,
-            },
-          },
-          (err, res, data) => {
-            if (err) {
-              verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
-              process.exit(0);
-            } else if (res.statusCode === 200) {
-              /** @var localiseFile translation file in localise.biz */
-              const localiseFile = JSON.parse(JSON.stringify(data));
-              try {
-                updateLocalFile(localiseFile, language);
-              } catch (e) {
-                error(chalk.red(e));
-                process.exit(0);
-              }
-            } else {
-              verbose
-                ? error(chalk.red(`Http Error :::: ${res.statusCode} `))
-                : "";
-              process.exit(0);
-            }
-          }
-        );
-      } catch (e) {
-        error(
-          chalk.red(
-            `File ${options.pathToTranslations}${language}.json not found`
-          )
-        );
-        process.exit(0);
-      }
-    }
-  }
-
   /**
    *
-   * @param {*} options
+   * @param {*} opt
    * @description check if all options required is initialized
    */
-  function required(options) {
+  function required(opt) {
     let allRequired = true;
-    for (const key in options) {
-      const value = options[key];
+    Object.keys(opt).forEach((key) => {
+      const value = opt[key];
       if (
         (key === "localisebiz" ||
           key === "languages" ||
@@ -95,10 +31,10 @@ module.exports = (function () {
           key === "pathToTranslations") &&
         value === undefined
       ) {
-        verbose ? error(chalk.red(`Config ${key} is required`)) : "";
+        if (verbose) error(chalk.red(`Config ${key} is required`));
         allRequired = false;
       }
-    }
+    });
     return allRequired;
   }
 
@@ -120,13 +56,72 @@ module.exports = (function () {
             )
           );
           process.exit(0);
-        } else {
-          verbose
-            ? log(`\n${options.pathToTranslations}${language}.json updated!`)
-            : "";
+        } else if (verbose) {
+          log(`\n${options.pathToTranslations}${language}.json updated!`);
         }
       }
     );
+  }
+
+  function start(v) {
+    if (v) {
+      verbose = true;
+      config.setVerbose(true);
+    }
+
+    options = config.getConfig();
+    if (!required(options)) {
+      process.exit(0);
+    }
+
+    if (verbose) log(chalk.bgCyan("\t\t\t\tSTART DOWNLOAD"));
+
+    for (let i = 0; i < options.languages.length; i += 1) {
+      const language = options.languages[i];
+      if (verbose) log("Language " + chalk.underline.bold(language) + " :::::");
+      const parametersUri = urlUtility.generateURIParameters(options);
+      const url = `${options.localisebiz}export/locale/${language}.json${parametersUri}`;
+
+      if (verbose) log(chalk.italic(`\tLoad API file ${url}`));
+
+      try {
+        request.get(
+          {
+            url: url,
+            json: true,
+            headers: {
+              Authorization: `Loco ${options.key}`,
+            },
+          },
+          (err, res, data) => {
+            if (err) {
+              if (verbose) error(chalk.red(`Http Error :::: ${err} `));
+              process.exit(0);
+            } else if (res.statusCode === 200) {
+              /** @var localiseFile translation file in localise.biz */
+              const localiseFile = JSON.parse(JSON.stringify(data));
+              try {
+                updateLocalFile(localiseFile, language);
+              } catch (e) {
+                error(chalk.red(e));
+                process.exit(0);
+              }
+            } else {
+              if (verbose)
+                error(chalk.red(`Http Error :::: ${res.statusCode} `));
+              process.exit(0);
+            }
+          }
+        );
+      } catch (e) {
+        error(
+          chalk.red(
+            `File ${options.pathToTranslations}${language}.json not found`
+          )
+        );
+        process.exit(0);
+      }
+    }
   }
 
   return {

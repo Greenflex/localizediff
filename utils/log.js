@@ -7,6 +7,10 @@ module.exports = (function () {
     console.error(info);
   }
 
+  function warn(info) {
+    console.warn(info);
+  }
+
   function clear() {
     console.clear();
   }
@@ -15,5 +19,6 @@ module.exports = (function () {
     log,
     error,
     clear,
+    warn,
   };
 })();
