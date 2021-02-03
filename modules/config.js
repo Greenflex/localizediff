@@ -246,5 +246,7 @@ module.exports = (function () {
   return {
     setVerbose,
     getConfig,
+    getVar,
+    getVarLanguages,
   };
 })();

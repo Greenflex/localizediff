@@ -5,6 +5,9 @@
     },
     {
       "path": "./modules"
+    },
+    {
+      "path": "./test"
     }
   ],
   "settings": {
