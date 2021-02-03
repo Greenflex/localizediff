@@ -114,12 +114,11 @@ module.exports = (function () {
           }
         );
       } catch (e) {
-        console.log(e);
-        // error(
-        //   chalk.red(
-        //     `File ${options.pathToTranslations}${language}.json not found`
-        //   )
-        // );
+        error(
+          chalk.red(
+            `File ${options.pathToTranslations}${language}.json not found`
+          )
+        );
         process.exit(0);
       }
     }
