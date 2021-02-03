@@ -78,7 +78,7 @@ module.exports = (function () {
 
     for (let i = 0; i < options.languages.length; i += 1) {
       const language = options.languages[i];
-      if (verbose) log("Language " + chalk.underline.bold(language) + " :::::");
+      if (verbose) log(chalk.underline.bold(`Language ${language} + " :::::"`));
       const parametersUri = urlUtility.generateURIParameters(options);
       const url = `${options.localisebiz}export/locale/${language}.json${parametersUri}`;
 
@@ -114,11 +114,12 @@ module.exports = (function () {
           }
         );
       } catch (e) {
-        error(
-          chalk.red(
-            `File ${options.pathToTranslations}${language}.json not found`
-          )
-        );
+        console.log(e);
+        // error(
+        //   chalk.red(
+        //     `File ${options.pathToTranslations}${language}.json not found`
+        //   )
+        // );
         process.exit(0);
       }
     }
