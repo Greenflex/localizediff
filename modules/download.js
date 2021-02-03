@@ -52,10 +52,10 @@ module.exports = (function () {
               verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
               process.exit(0);
             } else if (res.statusCode === 200) {
-              /** @var filePo translation file in localise.biz */
-              const filePo = JSON.parse(JSON.stringify(data));
+              /** @var localiseFile translation file in localise.biz */
+              const localiseFile = JSON.parse(JSON.stringify(data));
               try {
-                updateFileDev(filePo, language);
+                updateLocalFile(localiseFile, language);
               } catch (e) {
                 error(chalk.red(e));
                 process.exit(0);
@@ -95,7 +95,7 @@ module.exports = (function () {
           key === "pathToTranslations") &&
         value === undefined
       ) {
-        error(chalk.red(`Config ${key} is required`));
+        verbose ? error(chalk.red(`Config ${key} is required`)) : "";
         allRequired = false;
       }
     }
@@ -108,7 +108,7 @@ module.exports = (function () {
    * @param {*} language
    * @description Save local translation file
    */
-  function updateFileDev(finalFile, language) {
+  function updateLocalFile(finalFile, language) {
     fs.writeFile(
       `${options.pathToTranslations}${language}.json`,
       JSON.stringify(finalFile, null, 2),

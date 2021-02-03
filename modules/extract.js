@@ -6,6 +6,7 @@ const fs = require("fs");
 const config = require("./config");
 const chalk = require("chalk");
 const logUtility = require("../utils/log");
+const { setVerbose } = require("./config");
 const log = logUtility.log;
 const error = logUtility.error;
 
@@ -125,7 +126,7 @@ module.exports = (function () {
         (key === "languages" || key === "pathToTranslations") &&
         value === undefined
       ) {
-        error(chalk.red(`Config ${key} is required`));
+        verbose ? error(chalk.red(`Config ${key} is required`)) : "";
         allRequired = false;
       }
     }
@@ -195,5 +196,7 @@ module.exports = (function () {
 
   return {
     start,
+    required,
+    sync,
   };
 })();

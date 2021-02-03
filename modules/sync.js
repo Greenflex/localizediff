@@ -15,7 +15,7 @@ const error = logUtility.error;
 module.exports = (function () {
   let options = null;
   let verbose = false;
-  let direction = null;
+  let direction = "down";
 
   function start(v, d) {
     if (v) {
@@ -117,7 +117,7 @@ module.exports = (function () {
           key === "pathToTranslations") &&
         value === undefined
       ) {
-        error(chalk.red(`Config ${key} is required`));
+        verbose ? error(chalk.red(`Config ${key} is required`)) : "";
         allRequired = false;
       }
     }
@@ -130,10 +130,10 @@ module.exports = (function () {
    * @param {*} localiseFile
    * @description Create new translation file with translation changed by product owner and add new key translation
    */
-  function sync(localFile, localiseFile) {
+  function sync(localFile, localiseFile, opt = options) {
     verbose ? log("") : "";
 
-    const { commandAfterSync } = options;
+    const { commandAfterSync } = opt;
     let file = {};
     let nbModifications = 0;
     let nbNewKey = 0;
@@ -250,5 +250,7 @@ module.exports = (function () {
 
   return {
     start,
+    sync,
+    required,
   };
 })();
