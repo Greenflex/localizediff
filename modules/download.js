@@ -87,7 +87,7 @@ module.exports = (function () {
       try {
         request.get(
           {
-            url: url,
+            url,
             json: true,
             headers: {
               Authorization: `Loco ${options.key}`,

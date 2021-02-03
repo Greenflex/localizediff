@@ -9,8 +9,7 @@ const config = require("./config");
 const urlUtility = require("../utils/url");
 const logUtility = require("../utils/log");
 
-const log = logUtility.log;
-const error = logUtility.error;
+const { log, error } = logUtility;
 
 module.exports = (function () {
   let options = null;
@@ -69,7 +68,7 @@ module.exports = (function () {
     const url = `${options.localisebiz}import/json${parametersUri}&locale=fr-x-custom`;
     request.post(
       {
-        url: url,
+        url,
         json: true,
         headers: {
           Authorization: `Loco ${options.key}`,
@@ -133,7 +132,7 @@ module.exports = (function () {
             Authorization: `Loco ${options.key}`,
           },
         },
-        function (err, res, data) {
+        (err, res, data) => {
           if (err) {
             if (verbose) error(chalk.red(`Http Error :::: ${err} `));
             process.exit(0);

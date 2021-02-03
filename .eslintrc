@@ -5,5 +5,6 @@
   },
   "root": true,
   "extends": ["airbnb", "prettier"],
-  "ignorePatterns": "*.test*"
+  "ignorePatterns": "*.test*",
+  "rules": { "no-continue": "warn", "no-loop-func": "off" }
 }

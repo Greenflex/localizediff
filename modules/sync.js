@@ -11,8 +11,7 @@ const config = require("./config");
 const urlUtility = require("../utils/url");
 const logUtility = require("../utils/log");
 
-const log = logUtility.log;
-const error = logUtility.error;
+const { log, error } = logUtility;
 
 module.exports = (function () {
   let options = null;
@@ -143,7 +142,7 @@ module.exports = (function () {
     const url = `${localisebiz}import/json?tag-all=reactjs&locale=${language}`;
     request.post(
       {
-        url: url,
+        url,
         json: true,
         headers: {
           Authorization: `Loco ${key}`,
@@ -180,7 +179,7 @@ module.exports = (function () {
 
     const { languages, localisebiz, pathToTranslations, key } = options;
 
-    if (verbose) log("\t\t\t\t" + chalk.bgCyan("START SYNCHRONIZATION"));
+    if (verbose) log(chalk.bgCyan("\t\t\t\tSTART SYNCHRONIZATION"));
 
     const parametersUri = urlUtility.generateURIParameters(options);
 
@@ -207,7 +206,7 @@ module.exports = (function () {
 
         request.get(
           {
-            url: url,
+            url,
             json: true,
             headers: {
               Authorization: `Loco ${key}`,

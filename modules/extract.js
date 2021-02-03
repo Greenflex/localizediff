@@ -7,8 +7,7 @@ const chalk = require("chalk");
 const config = require("./config");
 const logUtility = require("../utils/log");
 
-const log = logUtility.log;
-const error = logUtility.error;
+const { log, error } = logUtility;
 
 module.exports = (function () {
   let options = null;

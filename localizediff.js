@@ -10,8 +10,7 @@ const downloadProgram = require("./modules/download");
 const importProgram = require("./modules/import");
 const logUtility = require("./utils/log");
 
-const log = logUtility.log;
-const warn = logUtility.warn;
+const { log, warn } = logUtility;
 
 const version = "2.0.0";
 let cmdValue = null;
@@ -134,12 +133,12 @@ program
   )
   .usage("[options] <cmd>")
   .arguments("<cmd>")
-  .action(function (cmd) {
+  .action((cmd) => {
     cmdValue = cmd;
   });
 
 function init() {
-  program.on("--help", function () {
+  program.on("--help", () => {
     log("\n  Infos:");
     log("\tOpen README.md");
     log("\thttps://www.npmjs.com/package/localizediff");

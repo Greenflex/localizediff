@@ -8,9 +8,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 const logUtility = require("../utils/log");
 
-const log = logUtility.log;
-const error = logUtility.error;
-const clear = logUtility.clear;
+const { log, error, clear } = logUtility;
 
 module.exports = (function () {
   let verbose = false;
@@ -73,7 +71,7 @@ module.exports = (function () {
    */
   function getConfig() {
     if (verbose) clear();
-    const params = openFileConfig().params;
+    const { params } = openFileConfig();
 
     if (verbose) log(chalk.bold("Config loaded :"));
     const options = {};
