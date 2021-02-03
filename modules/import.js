@@ -14,8 +14,6 @@ const error = logUtility.error;
 module.exports = (function () {
   let options = null;
   let verbose = false;
-  let direction = null;
-  let reactIntl = false;
 
   async function start(v) {
     if (v) {
@@ -24,6 +22,9 @@ module.exports = (function () {
     }
 
     options = config.getConfig();
+    if (!required(options)) {
+      process.exit(0);
+    }
 
     verbose
       ? log("\t\t\t\t" + chalk.bgCyan("START SYNCHRONIZATION REACT"))
@@ -84,6 +85,30 @@ module.exports = (function () {
     } catch (err) {
       log("error", err);
     }
+  }
+
+  /**
+   *
+   * @param {*} options
+   * @description check if all options required is initialized
+   */
+  function required(options) {
+    let allRequired = true;
+    for (const key in options) {
+      const value = options[key];
+      if (
+        (key === "localisebiz" ||
+          key === "languages" ||
+          key === "key" ||
+          key === "messagesFileName" ||
+          key === "pathToReactMessages") &&
+        value === undefined
+      ) {
+        error(chalk.red(`Config ${key} is required`));
+        allRequired = false;
+      }
+    }
+    return allRequired;
   }
 
   /**

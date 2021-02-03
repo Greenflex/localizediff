@@ -19,10 +19,20 @@ module.exports = (function () {
   }
 
   function getVar(key, params) {
-    if (process.env[`LOCALISE_${key.toUpperCase()}`]) {
-      return process.env[`LOCALISE_${key.toUpperCase()}`];
-    } else if (program[key]) {
+    if (program[key]) {
       return program[key];
+    } else if (process.env[`LOCALISE_${key.toUpperCase()}`]) {
+      return process.env[`LOCALISE_${key.toUpperCase()}`];
+    } else {
+      return params[key];
+    }
+  }
+
+  function getVarLanguages(params) {
+    if (program["languages"]) {
+      return program["languages"].split(",");
+    } else if (process.env["LOCALISE_LANGUAGES"]) {
+      return process.env["LOCALISE_LANGUAGES"].split(",");
     } else {
       return params[key];
     }
@@ -32,28 +42,26 @@ module.exports = (function () {
    * @description open localize.yml file
    */
   function openFileConfig() {
-    let configTry;
+    let configTry = { params: {} };
     let filePath;
 
     try {
-      if (process.env.LOCALISE_CONFIG_FILE) {
+      if (process.env.LOCALISE_CONFIGFILE) {
         filePath = filePath;
-      }
-      if (
-        program.configFile !== undefined &&
-        fs.existsSync(program.configFile)
-      ) {
+      } else if (program.configFile) {
         filePath = program.configFile;
-      }
-      if (fs.existsSync(`${process.cwd()}/localize.yml`)) {
-        filePath = `${process.cwd()}/localize.yml`;
       } else {
-        verbose ? error(chalk.red(`Config File Not Found`)) : "";
-        process.exit(0);
+        filePath = `${process.cwd()}/localize.yml`;
       }
-      configTry = yaml.safeLoad(fs.readFileSync(filePath, "utf8"));
+      if (!fs.existsSync(filePath)) {
+        verbose
+          ? error(chalk.yellow(`Config File Not Found ::::: ${filePath}`))
+          : "";
+      } else {
+        configTry = yaml.safeLoad(fs.readFileSync(filePath, "utf8"));
+      }
     } catch (err) {
-      verbose ? error(chalk.red(`error with Upload :::: ${err} `)) : "";
+      verbose ? error(chalk.red(`error with load file :::: ${err} `)) : "";
       process.exit(0);
     }
 
@@ -85,11 +93,13 @@ module.exports = (function () {
     verbose ? log(chalk.italic("\tkey: ") + chalk.bold(options.key)) : "";
     /** @var options.pathToReactMessages path to messages extracted in react projects  */
     options.pathToReactMessages = getVar("pathToReactMessages", params);
-    options.pathToReactMessages =
-      options.pathToReactMessages &&
-      options.pathToReactMessages[options.pathToReactMessages.length] === "/"
-        ? options.pathToReactMessages
-        : `${options.pathToReactMessages}/`;
+    if (options.pathToReactMessages) {
+      options.pathToReactMessages =
+        options.pathToReactMessages &&
+        options.pathToReactMessages[options.pathToReactMessages.length] === "/"
+          ? options.pathToReactMessages
+          : `${options.pathToReactMessages}/`;
+    }
     verbose && options.pathToReactMessages
       ? log(
           chalk.italic("\tpathToReactMessages: ") +
@@ -106,11 +116,13 @@ module.exports = (function () {
       : "";
     /** @var options.pathToTranslations path to local translation folder  */
     options.pathToTranslations = getVar("pathToTranslations", params);
-    options.pathToTranslations =
-      options.pathToTranslations &&
-      options.pathToTranslations[options.pathToTranslations.length] === "/"
-        ? options.pathToTranslations
-        : `${options.pathToTranslations}/`;
+    if (options.pathToTranslations) {
+      options.pathToTranslations =
+        options.pathToTranslations &&
+        options.pathToTranslations[options.pathToTranslations.length] === "/"
+          ? options.pathToTranslations
+          : `${options.pathToTranslations}/`;
+    }
     verbose && options.pathToTranslations
       ? log(
           chalk.italic("\tpathToTranslations:") +
@@ -118,7 +130,7 @@ module.exports = (function () {
         )
       : "";
     /** @var options.languages array languages you needed */
-    options.languages = getVar("languages", params) || ["en"];
+    options.languages = getVarLanguages(params) || ["en"];
     verbose
       ? log(chalk.italic("\tLanguages: ") + chalk.bold(options.languages))
       : "";

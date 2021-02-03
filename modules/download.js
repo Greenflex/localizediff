@@ -22,6 +22,9 @@ module.exports = (function () {
     }
 
     options = config.getConfig();
+    if (!required(options)) {
+      process.exit(0);
+    }
 
     verbose ? log("\t\t\t\t" + chalk.bgCyan("START DOWNLOAD")) : "";
 
@@ -78,6 +81,29 @@ module.exports = (function () {
 
   /**
    *
+   * @param {*} options
+   * @description check if all options required is initialized
+   */
+  function required(options) {
+    let allRequired = true;
+    for (const key in options) {
+      const value = options[key];
+      if (
+        (key === "localisebiz" ||
+          key === "languages" ||
+          key === "key" ||
+          key === "pathToTranslations") &&
+        value === undefined
+      ) {
+        error(chalk.red(`Config ${key} is required`));
+        allRequired = false;
+      }
+    }
+    return allRequired;
+  }
+
+  /**
+   *
    * @param {*} finalFile
    * @param {*} language
    * @description Save local translation file
@@ -104,6 +130,6 @@ module.exports = (function () {
   }
 
   return {
-    start: start,
+    start,
   };
 })();

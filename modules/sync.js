@@ -27,30 +27,36 @@ module.exports = (function () {
 
     options = config.getConfig();
 
+    if (!required(options)) {
+      process.exit(0);
+    }
+
+    const { languages, localisebiz, pathToTranslations, key } = options;
+
     verbose ? log("\t\t\t\t" + chalk.bgCyan("START SYNCHRONIZATION")) : "";
 
     const parametersUri = urlUtility.generateURIParameters(options);
 
-    for (let i = 0; i < options.languages.length; i++) {
-      const language = options.languages[i];
+    for (let i = 0; i < languages.length; i++) {
+      const language = languages[i];
       verbose
         ? log("Language " + chalk.underline.bold(language) + " :::::")
         : "";
 
-      const url = `${options.localisebiz}export/locale/${language}.json${parametersUri}`;
+      const url = `${localisebiz}export/locale/${language}.json${parametersUri}`;
 
       verbose ? log(chalk.italic(`\tLoad API file ${url}`)) : "";
 
       try {
-        /** @var fileDev local translation file  */
-        const fileDev = JSON.parse(
-          fs.readFileSync(`${options.pathToTranslations}${language}.json`)
+        /** @var localFile local translation file  */
+        const localFile = JSON.parse(
+          fs.readFileSync(`${pathToTranslations}${language}.json`)
         );
 
         verbose
           ? log(
               chalk.italic(
-                `\tLoad local file ${options.pathToTranslations}${language}.json`
+                `\tLoad local file ${pathToTranslations}${language}.json`
               )
             )
           : "";
@@ -60,7 +66,7 @@ module.exports = (function () {
             url: url,
             json: true,
             headers: {
-              Authorization: `Loco ${options.key}`,
+              Authorization: `Loco ${key}`,
             },
           },
           (err, res, data) => {
@@ -68,12 +74,12 @@ module.exports = (function () {
               verbose ? error(chalk.red(`Http Error :::: ${err} `)) : "";
               process.exit(0);
             } else if (res.statusCode === 200) {
-              /** @var filePo translation file in localise.biz */
-              const filePo = JSON.parse(JSON.stringify(data));
-              const finalFile = sync(fileDev, filePo);
+              /** @var localiseFile translation file in localise.biz */
+              const localiseFile = JSON.parse(JSON.stringify(data));
+              const finalFile = sync(localFile, localiseFile);
               try {
-                updateFileDev(finalFile, language);
-                updateFilePo(finalFile, language);
+                updateLocalFile(finalFile, language);
+                updateLocaliseFile(finalFile, language);
               } catch (e) {
                 error(chalk.red(e));
                 process.exit(0);
@@ -88,9 +94,7 @@ module.exports = (function () {
         );
       } catch (e) {
         error(
-          chalk.red(
-            `File ${options.pathToTranslations}${language}.json not found`
-          )
+          chalk.red(`File ${pathToTranslations}${language}.json not found`)
         );
         process.exit(0);
       }
@@ -99,38 +103,64 @@ module.exports = (function () {
 
   /**
    *
-   * @param {*} fileDev
-   * @param {*} filePo
+   * @param {*} options
+   * @description check if all options required is initialized
+   */
+  function required(options) {
+    let allRequired = true;
+    for (const key in options) {
+      const value = options[key];
+      if (
+        (key === "localisebiz" ||
+          key === "languages" ||
+          key === "key" ||
+          key === "pathToTranslations") &&
+        value === undefined
+      ) {
+        error(chalk.red(`Config ${key} is required`));
+        allRequired = false;
+      }
+    }
+    return allRequired;
+  }
+
+  /**
+   *
+   * @param {*} localFile
+   * @param {*} localiseFile
    * @description Create new translation file with translation changed by product owner and add new key translation
    */
-  function sync(fileDev, filePo) {
+  function sync(localFile, localiseFile) {
     verbose ? log("") : "";
 
+    const { commandAfterSync } = options;
     let file = {};
     let nbModifications = 0;
     let nbNewKey = 0;
 
-    for (let key in fileDev) {
-      if (fileDev[key] === filePo[key]) {
-        file[key] = filePo[key];
-      } else if (filePo[key] === undefined) {
-        file[key] = fileDev[key];
+    for (let key in localFile) {
+      if (localFile[key] === localiseFile[key]) {
+        file[key] = localiseFile[key];
+      } else if (localiseFile[key] === undefined) {
+        file[key] = localFile[key];
         nbNewKey++;
         verbose ? log(chalk.dim(`\tNew translation key : '${key}'`)) : "";
       } else {
-        file[key] = direction === "up" ? fileDev[key] : filePo[key];
+        file[key] = direction === "up" ? localFile[key] : localiseFile[key];
         verbose
           ? log(
-              chalk.dim(`\tKey '${key}' updated with value : '${filePo[key]}'`)
+              chalk.dim(
+                `\tKey '${key}' updated with value : '${localiseFile[key]}'`
+              )
             )
           : "";
         nbModifications++;
       }
     }
-    // check if new key in filePo ( localise.biz )
-    for (let key in filePo) {
-      if (fileDev[key] === undefined) {
-        file[key] = filePo[key];
+    // check if new key in localiseFile ( localise.biz )
+    for (let key in localiseFile) {
+      if (localFile[key] === undefined) {
+        file[key] = localiseFile[key];
         nbNewKey++;
         verbose ? log(chalk.dim(`\tNew translation key : '${key}'`)) : "";
         nbModifications++;
@@ -144,10 +174,10 @@ module.exports = (function () {
       log("\t----------------------");
     }
 
-    if (nbModifications > 0 && options.commandAfterSync) {
-      cmd.get(options.commandAfterSync, (err, data, stderr) => {
+    if (nbModifications > 0 && commandAfterSync) {
+      cmd.get(commandAfterSync, (err, data, stderr) => {
         if (err) {
-          log(chalk.red(`Command ${options.commandAfterSync} fail!`));
+          log(chalk.red(`Command ${commandAfterSync} fail!`));
           process.exit(0);
         } else {
           verbose ? log(data) : "";
@@ -164,21 +194,22 @@ module.exports = (function () {
    * @param {*} language
    * @description Save local translation file
    */
-  function updateFileDev(finalFile, language) {
+  function updateLocalFile(finalFile, language) {
+    const { pathToTranslations } = options;
     fs.writeFile(
-      `${options.pathToTranslations}${language}.json`,
+      `${pathToTranslations}${language}.json`,
       JSON.stringify(finalFile, null, 2),
       (err) => {
         if (err) {
           error(
             chalk.red(
-              `Can't write in file ${options.pathToTranslations}${language}.json`
+              `Can't write in file ${pathToTranslations}${language}.json`
             )
           );
           process.exit(0);
         } else {
           verbose
-            ? log(`\n${options.pathToTranslations}${language}.json updated!`)
+            ? log(`\n${pathToTranslations}${language}.json updated!`)
             : "";
         }
       }
@@ -191,14 +222,15 @@ module.exports = (function () {
    * @param {*} language
    * @description Update translation file to localise.biz
    */
-  function updateFilePo(finalFile, language) {
-    const url = `${options.localisebiz}import/json?tag-all=reactjs&locale=${language}`;
+  function updateLocaliseFile(finalFile, language) {
+    const { localisebiz, key } = options;
+    const url = `${localisebiz}import/json?tag-all=reactjs&locale=${language}`;
     request.post(
       {
         url: url,
         json: true,
         headers: {
-          Authorization: `Loco ${options.key}`,
+          Authorization: `Loco ${key}`,
         },
         body: finalFile,
       },

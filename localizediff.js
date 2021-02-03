@@ -22,7 +22,10 @@ program
     "-d, --direction [direction]",
     "use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )"
   )
-  .option("-c, --config-file [path]", "path to config file")
+  .option(
+    "-c, --configFile [path]",
+    "path to config file localise.yml [default: './localise.yml']"
+  )
   .option(
     "-l, --localisebiz [url]",
     "url to localise.biz api [default='https://localise.biz/api']"
@@ -35,14 +38,14 @@ program
   .option("-p, --pathToTranslations [path]", "path to local translation folder")
   .option(
     "-la, --languages [languages]",
-    "array languages you needed [default:\"['en']\"]"
+    "array languages you needed [default:\"['en']\"] ex: en,fr,es,..."
   )
   .option(
     "-fi, --filter [filter]",
     "Filter assets by comma-separated tag names. Match any tag with * and negate tags by prefixing with ! "
   )
   .option(
-    "-ca, --command-after-sync [command]",
+    "-ca, --commandAfterSync [command]",
     "command to execute after sync if translation file changed"
   )
   .option(

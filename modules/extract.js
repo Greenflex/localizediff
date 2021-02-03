@@ -30,6 +30,9 @@ module.exports = (function () {
     languageToExtract = languageFrom;
 
     options = config.getConfig();
+    if (!required(options)) {
+      process.exit(0);
+    }
     const { languages, pathToTranslations } = options;
 
     verbose ? log("\t\t\t\t" + chalk.bgCyan("START EXTRACT")) : "";
@@ -45,11 +48,11 @@ module.exports = (function () {
         ? log("Language " + chalk.underline.bold(language) + " :::::")
         : "";
 
-      let fileDev = null;
+      let localFile = null;
       let fileToExtract = null;
 
       try {
-        /** @var fileDev local translation file  */
+        /** @var localFile local translation file  */
         fileToExtract = JSON.parse(
           fs.readFileSync(`${pathToTranslations}${languageToExtract}.json`)
         );
@@ -63,8 +66,8 @@ module.exports = (function () {
       }
 
       try {
-        /** @var fileDev local translation file  */
-        fileDev = JSON.parse(
+        /** @var localFile local translation file  */
+        localFile = JSON.parse(
           fs.readFileSync(`${pathToTranslations}${language}.json`)
         );
       } catch (e) {
@@ -99,9 +102,9 @@ module.exports = (function () {
           )
         : "";
 
-      const finalFile = sync(fileDev, fileToExtract);
+      const finalFile = sync(localFile, fileToExtract);
       try {
-        updateFileDev(finalFile, language);
+        updateLocalFile(finalFile, language);
       } catch (e) {
         error(chalk.red(e));
         process.exit(0);
@@ -111,11 +114,31 @@ module.exports = (function () {
 
   /**
    *
-   * @param {*} fileDev
+   * @param {*} options
+   * @description check if all options required is initialized
+   */
+  function required(options) {
+    let allRequired = true;
+    for (const key in options) {
+      const value = options[key];
+      if (
+        (key === "languages" || key === "pathToTranslations") &&
+        value === undefined
+      ) {
+        error(chalk.red(`Config ${key} is required`));
+        allRequired = false;
+      }
+    }
+    return allRequired;
+  }
+
+  /**
+   *
+   * @param {*} localFile
    * @param {*} fileToExtract
    * @description Add key in language file from extract file
    */
-  function sync(fileDev, fileToExtract) {
+  function sync(localFile, fileToExtract) {
     verbose ? log("") : "";
 
     let file = {};
@@ -123,12 +146,12 @@ module.exports = (function () {
     let nbNewKey = 0;
 
     for (let key in fileToExtract) {
-      if (fileDev[key] === undefined) {
+      if (localFile[key] === undefined) {
         file[key] = fileToExtract[key];
         nbNewKey++;
         verbose ? log(chalk.dim(`\tNew translation key : '${key}'`)) : "";
       } else {
-        file[key] = fileDev[key];
+        file[key] = localFile[key];
       }
     }
     if (verbose) {
@@ -148,7 +171,7 @@ module.exports = (function () {
    * @param {*} language
    * @description Save local translation file
    */
-  function updateFileDev(finalFile, language) {
+  function updateLocalFile(finalFile, language) {
     const { pathToTranslations } = options;
     fs.writeFile(
       `${pathToTranslations}${language}.json`,

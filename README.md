@@ -23,13 +23,13 @@ Options:
   -v, --verbose                        display verbose
   -f, --from [language]                language from extract
   -d, --direction [direction]          use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )
-  -c, --config-file [path]             path to config file
+  -c, --configFile [path]              path to config file localise.yml [default: './localise.yml']
   -l, --localisebiz [url]              url to localise.biz api [default='https://localise.biz/api']
   -k, --key [key]                      key to localise.biz/
   -r, --pathToReactMessages [path]  path to react messages
   -m, --messagesFileName [message]   message file name
   -p, --pathToTranslations [path]    path to local translation folder
-  -la, --languages [languages]         array languages you needed [default: ['en']]
+  -la, --languages [languages]         array languages you needed [default: ['en']] ex: en,fr,es,...
   -fi, --filter [filter]               Filter assets by comma-separated tag names. Match any tag with * and negate tags by prefixing with !
   -ca, --command-after-sync [command]  command to execute after sync if translation file changed
   -fa, --format [format]               More specific format of file type. e.g. symfony applies to php, xlf & yml [default value: 'script']
@@ -100,6 +100,7 @@ pattern: _LOCALISE\_{option.toUpperCase}={value}_
 ```
 LOCALISE_LOCALISEBIZ=
 LOCALISE_KEY=
+LOCALISE_LANGUAGES=en,fr
 ```
 
 > \_LOCALISE_LANGUAGES doesn't work, use in localize.yml or --languages option
@@ -109,7 +110,7 @@ LOCALISE_KEY=
 _localizediff [options]_
 
 ```bash
-localizediff --key="" --localisebiz="" --languages=['en', 'fr']
+localizediff --key="" --localisebiz="" --languages=en,fr [--{option}={value}]
 ```
 
 ## Download
@@ -123,7 +124,7 @@ Extract all key and value from file {--from.json} for all languages configured.
 ## Sync
 
 Compare translation local files with localise.biz translation files language by language, then create final file with all translations.
-If localizediff find same key with same value, option direction (-d, --direction) will be taken.
+If localizediff find same key with and different value, option direction (-d, --direction) will be taken.
 
 ## Advanced options
 
