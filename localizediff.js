@@ -18,36 +18,36 @@ let cmdValue = null;
 program
   .version(version)
   .option("-v, --verbose", "display verbose")
-  .option("-f, --from [language]", "language from extract")
-  .option(
-    "-d, --direction [direction]",
-    "use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )"
-  )
   .option(
     "-c, --configFile [path]",
     "path to config file localise.yml [default: './localise.yml']"
   )
   .option(
-    "-l, --localisebiz [url]",
-    "url to localise.biz api [default='https://localise.biz/api']"
+    "-la, --languages [languages]",
+    "array languages you needed [default:\"['en']\"] ex: en,fr,es,..."
   )
-  .option("-k, --key [key]", "key to localise.biz/")
   // Écrire une meilleure doc @seb @christian
   .option("-r, --pathToReactMessages [path]", "path to react messages")
   // Sert au module import à vérifier @jordan @seb @christian
   .option("-m, --messagesFileName [message]", "message file name")
   .option("-p, --pathToTranslations [path]", "path to local translation folder")
   .option(
-    "-la, --languages [languages]",
-    "array languages you needed [default:\"['en']\"] ex: en,fr,es,..."
+    "-ca, --commandAfterSync [command]",
+    "command to execute after sync if translation file changed"
+  )
+  .option(
+    "-l, --localisebiz [url]",
+    "url to localise.biz api [default='https://localise.biz/api']"
+  )
+  .option("-k, --key [key]", "key to localise.biz/")
+  .option("-f, --from [language]", "language from extract")
+  .option(
+    "-d, --direction [direction]",
+    "use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )"
   )
   .option(
     "-fi, --filter [filter]",
     "Filter assets by comma-separated tag names. Match any tag with * and negate tags by prefixing with ! "
-  )
-  .option(
-    "-ca, --commandAfterSync [command]",
-    "command to execute after sync if translation file changed"
   )
   .option(
     "-fa, --format [format]",

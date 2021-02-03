@@ -15,46 +15,44 @@ npm -g install localizediff
 ## Logiciel
 
 ```bash
-$ localizediff -h
+$ localizediff --help
 Usage: localizediff [options] <cmd>
 
 Options:
-  -V, --version                        output the version number
-  -v, --verbose                        display verbose
-  -f, --from [language]                language from extract
-  -d, --direction [direction]          use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )
-  -c, --configFile [path]              path to config file localise.yml [default: './localise.yml']
-  -l, --localisebiz [url]              url to localise.biz api [default='https://localise.biz/api']
-  -k, --key [key]                      key to localise.biz/
-  -r, --pathToReactMessages [path]  path to react messages
-  -m, --messagesFileName [message]   message file name
+  -V, --version                      output the version number
+  -v, --verbose                      display verbose
+  -c, --configFile [path]            path to config file localise.yml [default: './localise.yml']
+  -la, --languages [languages]       array languages you needed [default:"['en']"] ex: en,fr,es,...
   -p, --pathToTranslations [path]    path to local translation folder
-  -la, --languages [languages]         array languages you needed [default: ['en']] ex: en,fr,es,...
-  -fi, --filter [filter]               Filter assets by comma-separated tag names. Match any tag with * and negate tags by prefixing with !
-  -ca, --command-after-sync [command]  command to execute after sync if translation file changed
-  -fa, --format [format]               More specific format of file type. e.g. symfony applies to php, xlf & yml [default value: 'script']
-  -in, --index                         Override default lookup key for the file format: 'id', 'text' or a custom alias
-  -src, --source                       Specify alternative source locale instead of project default
-  -np, --namespace                     Override the project name for some language packs that use it as a key prefix
-  -fb, --fallback                      Fallback locale for untranslated assets, specified as short code. e.g. en or en_GB
-  -or, --order                         Export translations according to asset order
-  -st, --status                        Export translations with a specific status or flag. Negate values by prefixing with !. e.g. 'translated', or '!fuzzy'.
-  -pr, --printf                        Force alternative 'printf' style.
-  -ch, --charset                       Specify preferred character encoding. Alternative to Accept-Charset header but accepts a single value which must be valid.
-  -br, --breaks                        Force platform-specific line-endings. Default is Unix (LF) breaks.
-  -nc, --noComments                    Disable rendering of redundant inline comments including the Loco banner.
-  -nf, --noFolding                     Protect dot-separated keys so that foo.bar is not folded into object properties.
-  -as, --async                         Specify that import should be done asynchronously (recommended for large files)
-  -pa, --path                          Specify original file path for source code references (excluding line number)
-  -in, --ignoreNew                     Specify that new assets will NOT be added to the project
-  -ie, --ignoreExisting                Specify that existing assets encountered in the file will NOT be updated
-  -tn, --tagNew                        Tag any NEW assets added during the import with the given tags (comma separated)
-  -ta, --tagAll                        Tag ALL assets in the file with the given tags (comma separated)
-  -uta, --unTagAll                     Remove existing tags from any assets matched in the imported file (comma separated)
-  -tb, --tagAbsent                     Tag existing assets in the project that are NOT found in the imported file
-  -utb, --unTagAbsent                  Remove existing tags from assets NOT found in the imported file
-  -da, --deleteAbsent                  Permanently DELETES project assets NOT found in the file (use with extreme caution)
-  -h, --help                           output usage information
+  -ca, --commandAfterSync [command]  command to execute after sync if translation file changed
+  -l, --localisebiz [url]            url to localise.biz api [default='https://localise.biz/api']
+  -k, --key [key]                    key to localise.biz/
+  -f, --from [language]              language from extract
+  -d, --direction [direction]        use 'down' if local changes should be overwritten [default: 'down'] ( use for sync cmd )
+  -fi, --filter [filter]             Filter assets by comma-separated tag names. Match any tag with * and negate tags by prefixing with !
+  -fa, --format [format]             More specific format of file type. e.g. symfony applies to php, xlf & yml [default value: 'script']
+  -in, --index                       Override default lookup key for the file format: 'id', 'text' or a custom alias
+  -src, --source                     Specify alternative source locale instead of project default
+  -np, --namespace                   Override the project name for some language packs that use it as a key prefix
+  -fb, --fallback                    Fallback locale for untranslated assets, specified as short code. e.g. en or en_GB
+  -or, --order                       Export translations according to asset order
+  -st, --status                      Export translations with a specific status or flag. Negate values by prefixing with !. e.g. 'translated', or '!fuzzy'.
+  -pr, --printf                      Force alternative 'printf' style.
+  -ch, --charset                     Specify preferred character encoding. Alternative to Accept-Charset header but accepts a single value which must be valid.
+  -br, --breaks                      Force platform-specific line-endings. Default is Unix (LF) breaks.
+  -nc, --noComments                  Disable rendering of redundant inline comments including the Loco banner.
+  -nf, --noFolding                   Protect dot-separated keys so that foo.bar is not folded into object properties.
+  -as, --async                       Specify that import should be done asynchronously (recommended for large files)
+  -pa, --path                        Specify original file path for source code references (excluding line number)
+  -in, --ignoreNew                   Specify that new assets will NOT be added to the project
+  -ie, --ignoreExisting              Specify that existing assets encountered in the file will NOT be updated
+  -tn, --tagNew                      Tag any NEW assets added during the import with the given tags (comma separated)
+  -ta, --tagAll                      Tag ALL assets in the file with the given tags (comma separated)
+  -uta, --unTagAll                   Remove existing tags from any assets matched in the imported file (comma separated)
+  -tb, --tagAbsent                   Tag existing assets in the project that are NOT found in the imported file
+  -utb, --unTagAbsent                Remove existing tags from assets NOT found in the imported file
+  -da, --deleteAbsent                Permanently DELETES project assets NOT found in the file (use with extreme caution)
+  -h, --help                         output usage information
 
   Infos:
 	Open README.md
@@ -71,6 +69,7 @@ Options:
 	localizediff -f en extract
 	localizediff -v -f fr extract
 	localizediff -v download
+
 ```
 
 ## Configuration
