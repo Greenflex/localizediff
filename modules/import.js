@@ -1,7 +1,3 @@
-/**
- * @author AZOULAY Jordan <jazoulay@greenflex.com>
- * @description Compare translation local files with localise.biz translation files for french and upload resulting file to localise
- */
 const request = require("request");
 const fs = require("fs");
 const chalk = require("chalk");
@@ -63,7 +59,6 @@ module.exports = (function () {
    * @description Update translation file to localise.biz
    */
   function updateFileLocalize(finalFile) {
-    //  generateUrl(options);
     const parametersUri = urlUtility.generateURIParameters(options);
     const url = `${options.localisebiz}import/json${parametersUri}&locale=fr-x-custom`;
     request.post(

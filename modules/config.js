@@ -8,7 +8,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 const logUtility = require("../utils/log");
 
-const { log, error, clear } = logUtility;
+const { log, error, clear, warn } = logUtility;
 
 module.exports = (function () {
   let verbose = false;
@@ -52,11 +52,19 @@ module.exports = (function () {
       } else {
         filePath = `${process.cwd()}/localize.yml`;
       }
-      if (!fs.existsSync(filePath)) {
-        if (verbose)
-          error(chalk.yellow(`Config File Not Found ::::: ${filePath}`));
-      } else {
+      if (fs.existsSync(filePath)) {
         configTry = yaml.safeLoad(fs.readFileSync(filePath, "utf8"));
+      } else if (fs.existsSync(`${process.cwd()}/localize.yml.dist`)) {
+        configTry = yaml.safeLoad(
+          fs.readFileSync(`${process.cwd()}/localize.yml.dist`, "utf8")
+        );
+      } else {
+        if (verbose)
+          warn(
+            chalk.yellow(
+              `Config File Not Found ::::: ${filePath} or ${process.cwd()}/localize.yml.dist`
+            )
+          );
       }
     } catch (err) {
       if (verbose) error(chalk.red(`error with load file :::: ${err} `));

@@ -10,4 +10,5 @@ env
 .npm/
 .ssh/
 localize.yml
+localize.yml.dist
 translations/
