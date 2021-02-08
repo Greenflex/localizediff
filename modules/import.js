@@ -1,3 +1,7 @@
+/**
+ * @deprecated
+ * @description isn't import module link with Import API https://localise.biz/api/docs/import will be change
+ */
 const request = require("request");
 const fs = require("fs");
 const chalk = require("chalk");
